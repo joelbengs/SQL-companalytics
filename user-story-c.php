@@ -61,7 +61,7 @@
         <div id="company-navigation-bar" class="topnav">
 
             <div class="topnav-centered">
-                <a href = "https://www.students.cs.ubc.ca/~manny07/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
+                <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
             </div>
 
             <form method="POST" id="showIndustries" action="oracle-test.php" style="display: none;">
