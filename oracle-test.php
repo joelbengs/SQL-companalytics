@@ -75,23 +75,30 @@
 
         <div id="company-navigation-bar" class="topnav">
 
+            <!--Company logo. Currently, pressing it leads to illegal URL-->
             <div class="topnav-centered">
                 <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
             </div>
 
+            <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
+            <!--The form is prefilled with values.-->
             <form method="POST" id="showIndustries" action="oracle-test.php" style="display: none;">
                 <input type="hidden" id="showIndustriesTable" value="showIndustriesTable" name="showIndustriesTable">
                 <p><input type="submit" value="industry" name="showIndustry"></p>
             </form>
+
+            <!--This is the clickable text that the user can see and press to submit the above hidden form-->
+            <?= '<a href="#" onclick="document.getElementById(\'showIndustries\').submit(); ">Industries</a>'; ?>
+
+
+            <?= '<a>Investors</a>'; ?>
+
 
             <form method="POST" id="showCompanies" action="oracle-test.php" style="display: none;">
                 <input type="hidden" id="showCompaniesTable" value="showCompaniesTable" name="showCompaniesTable">
                 <p><input type="submit" value="company" name="showCompany"></p>
             </form>
 
-            <?= '<a href="#" onclick="document.getElementById(\'showIndustries\').submit(); ">Industries</a>'; ?>
-
-            <?= '<a>Investors</a>'; ?>
             <?= '<a href="#" onclick="document.getElementById(\'showCompanies\').submit(); ">Companies</a>'; ?>
 
             <div class="topnav-right">
@@ -205,7 +212,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_CWL", "a12345678", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -364,7 +371,7 @@
         }
 
         // HANDLE ALL POST ROUTES
-	// A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
+	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
             if (connectToDB()) {
                 if (array_key_exists('resetTablesRequest', $_POST)) {
