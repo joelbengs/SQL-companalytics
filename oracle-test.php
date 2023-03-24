@@ -91,7 +91,12 @@
             <?= '<a href="#" onclick="document.getElementById(\'showIndustries\').submit(); ">Industries</a>'; ?>
 
 
-            <?= '<a>Investors</a>'; ?>
+            <form method="POST" id="showInvestors" action = "oracle-test.php" style="display: none;">
+                <input type="hidden" id="showInvestorsTable" value="showInvestorsTable" name = "showInvestorsTable">
+                <input type="submit" value="investor" name="showinvestor">
+            </form>
+
+            <?= '<a href="#" onclick="document.getElementById(\'\').submit();">Investors</a>'; ?>
 
 
             <form method="POST" id="showCompanies" action="oracle-test.php" style="display: none;">
