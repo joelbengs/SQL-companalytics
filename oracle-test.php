@@ -82,6 +82,7 @@
 
             <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
             <!--The form is prefilled with values.-->
+            <!--INDUSTRIES-->
             <form method="POST" id="showIndustries" action="oracle-test.php" style="display: none;">
                 <input type="hidden" id="showIndustriesTable" value="showIndustriesTable" name="showIndustriesTable">
                 <p><input type="submit" value="industry" name="showIndustry"></p>
@@ -90,7 +91,7 @@
             <!--This is the clickable text that the user can see and press to submit the above hidden form-->
             <?= '<a href="#" onclick="document.getElementById(\'showIndustries\').submit(); ">Industries</a>'; ?>
 
-
+            <!--INVESTORS-->
             <form method="POST" id="showInvestors" action = "oracle-test.php" style="display: none;">
                 <input type="hidden" id="showInvestorsTable" value="showInvestorsTable" name = "showInvestorsTable">
                 <input type="submit" value="investor" name="showinvestor">
@@ -98,7 +99,7 @@
 
             <?= '<a href="#" onclick="document.getElementById(\'\').submit();">Investors</a>'; ?>
 
-
+            <!--COMPANIES-->
             <form method="POST" id="showCompanies" action="oracle-test.php" style="display: none;">
                 <input type="hidden" id="showCompaniesTable" value="showCompaniesTable" name="showCompaniesTable">
                 <p><input type="submit" value="company" name="showCompany"></p>
@@ -281,6 +282,32 @@
             $result = executePlainSQL("SELECT companyName FROM Company");
             printNames($result, 'companyName');
         }
+
+        function handleInvestorsRequest() {
+            global @db_conn, $investorsExist;
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables WHERE table_name = 'INVESTOR'");
+            if(($row = oci_fetch_row($checkExists)) != False) {
+                if ($row[0] == '') {
+                    $companiesExist = False;
+                } else if ($row[0] == 'INVESTOR') {
+                    $companiesExist = True;
+                }
+            }
+
+            if (!$companiesExist) {
+                executePlainSQL("CREATE TABLE Investors(investorName CHAR(80), isVentureCapitalist BINARY, PRIMARY KEY (investorName)");
+                executePlainSQL("INSERT INTO Investors(investorName, isVentureCapitalist) VALUES('Warren Buffett', 'F')");                
+                executePlainSQL("INSERT INTO Investors(investorName, isVentureCapitalist) VALUES('Philip Fisher', 'F')");                
+                executePlainSQL("INSERT INTO Investors(investorName, isVentureCapitalist) VALUES('Benjamin Graham', 'F')");                
+                executePlainSQL("INSERT INTO Investors(investorName, isVentureCapitalist) VALUES('Bain Capital', 'T')");
+                executePlainSQL("INSERT INTO Investors(investorName, isVentureCapitalist) VALUES('GV', 'T')");
+                OCICommit($db_conn);
+            }
+
+            $result = executePlainSQL("SELECT investorName FROM INVESTORS");
+            printNames($result, 'investorName');
+
+        }
         
         // when the user clicks the industries button from the navigation bar (sets up the industries table if it does not already exist, displays industry names after)
         function handleIndustriesRequest() {
@@ -383,6 +410,8 @@
                     handleResetRequest();
                 } else if (array_key_exists('showIndustriesTable', $_POST)) {
                     handleIndustriesRequest();
+                } else if (array_key_exists('showInvestorsTable', $_POST)) {
+                    handleIndustriesRequest();
                 } else if (array_key_exists('showCompaniesTable', $_POST)) {
                     handleCompaniesRequest();
                 } else if (array_key_exists('updateQueryRequest', $_POST)) {
@@ -396,10 +425,9 @@
                 disconnectFromDB();
             }
         }
-
-
+        
         // HANDLE ALL GET ROUTES
-	// A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
+	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handleGETRequest() {
             if (connectToDB()) {
                 if (array_key_exists('countTuples', $_GET)) {
@@ -411,7 +439,7 @@
         }
 
         // use submit button names here for search forms, and hidden value names here for navbar links
-		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit'])) {
+		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit'])) {
             handlePOSTRequest();
         } else if (isset($_GET['countTupleRequest'])) {
             handleGETRequest();
