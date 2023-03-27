@@ -140,7 +140,7 @@
         $companiesExist = False;
 
         function debugAlertMessage($message) {
-            //testing commit from cwl account
+            //testing commit from cwl account 2
             global $show_debug_alert_messages;
 
             if ($show_debug_alert_messages) {
