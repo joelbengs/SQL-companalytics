@@ -390,12 +390,14 @@
                 }
 
                 disconnectFromDB();
+            } else {
+                echo 'alert("failed to connect to DB")';
             }
         }
 
 
         // HANDLE ALL GET ROUTES
-	// A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
+	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handleGETRequest() {
             if (connectToDB()) {
                 if (array_key_exists('countTuples', $_GET)) {
@@ -403,9 +405,12 @@
                 }
 
                 disconnectFromDB();
+            } else {
+                echo 'alert("failed to connect to DB")';
             }
         }
 
+        // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit'])) {
             handlePOSTRequest();
