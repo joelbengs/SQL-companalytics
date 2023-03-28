@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Companalytics</title>
+        <link rel="icon" type="image/x-icon" href="./104663.png">
     </head>
     <style>
         .namesTable {
