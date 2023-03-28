@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Companalytics</title>
+        <link rel="icon" type="image/x-icon" href="./104663.png">
     </head>
     <style>
         .namesTable {
@@ -156,6 +157,7 @@
         $companiesExist = False;
 
         function debugAlertMessage($message) {
+            //testing commit from cwl account 2
             global $show_debug_alert_messages;
 
             if ($show_debug_alert_messages) {
@@ -297,30 +299,30 @@
             global $db_conn, $investorExist;
 
             $checkExists = executePlainSQL("SELECT table_name FROM user_tables WHERE table_name = 'INVESTOR'");
-          
+
              if (($row = oci_fetch_row($checkExists)) != false) {
                 if ($row[0] == '') {
                     $investorExist = False;
                 } else if ($row[0] == 'INVESTOR') {
                     $investorExist = True;
                 }
-            } 
+            }
 
             if (!$investorExist) {
                 executePlainSQL("CREATE TABLE Investor(investorName CHAR(80), isVentureCapitalist NUMBER(1), PRIMARY KEY (investorName))");
-                executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Warren Buffett', 0)");                
-                executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Philip Fisher', 0)");                
-                executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Benjamin Graham', 0)");                
+                executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Warren Buffett', 0)");
+                executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Philip Fisher', 0)");
+                executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Benjamin Graham', 0)");
                 executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('Bain Capital', 1)");
                 executePlainSQL("INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('GV', 1)");
-                
+
                 OCICommit($db_conn);
             }
 
             $result = executePlainSQL("SELECT investorName FROM INVESTOR");
             printNames($result, 'investorName');
         }
-        
+
         // when the user clicks the industries button from the navigation bar (sets up the industries table if it does not already exist, displays industry names after)
         function handleIndustriesRequest() {
             global $db_conn, $industriesExists;
@@ -435,9 +437,11 @@
                 }
 
                 disconnectFromDB();
+            } else {
+                echo 'alert("failed to connect to DB")';
             }
         }
-        
+
         // HANDLE ALL GET ROUTES
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handleGETRequest() {
@@ -447,10 +451,13 @@
                 }
 
                 disconnectFromDB();
+            } else {
+                echo 'alert("failed to connect to DB")';
             }
         }
 
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
+        // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit'])) {
             handlePOSTRequest();
