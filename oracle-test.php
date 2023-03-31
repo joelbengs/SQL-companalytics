@@ -157,6 +157,13 @@
 
             <hr />
 
+            <h2>View Total Amount Invested Per Company</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
+            </form>
+
+            <hr />
+
         </div>
      
         <?php
@@ -403,6 +410,10 @@
         function handleSearchAboveAverage() {
             global $db_conn, $investsExists, $ActiveInExists;
 
+            executePlainSQL("DROP TABLE Invests");
+            executePlainSQL("DROP TABLE ActiveIn");
+            OCICommit($db_conn);
+
             $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'INVESTS'");
             if (($row = oci_fetch_row($checkExists)) != false) {
                 if ($row[0] == '') {
@@ -423,13 +434,14 @@
 
             if ($investsExists == False) {
                 executePlainSQL("CREATE TABLE Invests (investorName char(80), companyName char(80), amountInvested int, PRIMARY KEY(investorName, companyName))");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Apple', 20000)");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Microsoft', 15000)");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Google', 8000)");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Tesla', 12000)");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Apple', 9000)");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Instagram', 20000)");
-                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Tesla', 20000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Apple', 2000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Microsoft', 1500000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Google', 800000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Tesla', 1200000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Apple', 900000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Benjamin Graham', 'Rivian', 1000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Instagram', 2000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Tesla', 2000000)");
                 OCICommit($db_conn);
             }
 
@@ -457,6 +469,9 @@
 
         function handleSearchCEOs() {
             global $db_conn, $CEOexists;
+
+            executePlainSQL("DROP TABLE CEO");
+            OCICommit($db_conn);
 
             $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'CEO'");
             if (($row = oci_fetch_row($checkExists)) != false) {
@@ -492,6 +507,39 @@
                                     GROUP BY educationLevel
                                     HAVING count(*) > 1");
             printCEOInfo($result);
+        }
+
+        function handleTotalInvest() {
+            global $db_conn, $investsExists;
+
+            executePlainSQL("DROP TABLE Invests");
+            OCICommit($db_conn);
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'INVESTS'");
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $investsExists = False;
+                } else if ($row[0] == 'INVESTS') {
+                    $investsExists = True;
+                }
+            }
+
+            if ($investsExists == False) {
+                executePlainSQL("CREATE TABLE Invests (investorName char(80), companyName char(80), amountInvested int, PRIMARY KEY(investorName, companyName))");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Apple', 2000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Microsoft', 1500000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Google', 800000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Tesla', 1200000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Apple', 900000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Benjamin Graham', 'Rivian', 1000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Instagram', 2000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Tesla', 2000000)");
+                OCICommit($db_conn);
+            }
+            $result = executePlainSQL("SELECT sum(amountInvested) amount, companyName
+                                       FROM Invests
+                                       GROUP BY companyName");
+            printTotalInvestInfo($result);
         }
 
         // helper used to create the table for primary key of a table (can be used universally)
@@ -555,6 +603,17 @@
             echo "</table>";
         }
 
+          // helper used to print all info of a table
+          function printTotalInvestInfo($result) { //prints results from a select statement
+            echo "<table id=\"TotalInvestInfo\" class=\"infoTable\">";
+            echo "<tr><th>Company Name</th><th>Amount</th></tr>";
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+                echo "<tr><td>" . $row["COMPANYNAME"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+            }
+
+            echo "</table>";
+        }
+
         // HANDLE ALL POST ROUTES
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
@@ -577,6 +636,8 @@
                     handleSearchAboveAverage();
                 } else if ($_POST['searchCEOs'] == 'Search') {
                     handleSearchCEOs();
+                } else if ($_POST['searchTotalInvest'] == 'Search') {
+                    handleTotalInvest();
                 }
 
                 disconnectFromDB();
@@ -604,7 +665,8 @@
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || 
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || 
-            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs'])) {
+            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || 
+            isset($_POST['searchTotalInvest'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
