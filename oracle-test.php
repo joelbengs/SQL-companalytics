@@ -78,7 +78,7 @@
 
             <!--Company logo. Currently, pressing it leads to illegal URL-->
             <div class="topnav-centered">
-                <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
+                <a href = "https://www.students.cs.ubc.ca/~manny07/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
             </div>
 
             <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
@@ -120,7 +120,6 @@
 
             <h2>Search Industries</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="searchIndustries" name="searchIndustries">
                 Industry Name: <input type="text" name="industryName" class="searchBox">
                 <input type="submit" value="Search" name="searchIndustriesSubmit" class="button searchButton"></p>
             </form>
@@ -129,7 +128,6 @@
 
             <h2>Search Investors</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="searchInvestors" name="searchInvestors">
                 Investor Name: <input type="text" name="investorName" class="searchBox">
                 <input type="submit" value="Search" name="searchInvestorsSubmit" class="button searchButton"></p>
             </form>
@@ -152,6 +150,13 @@
 
             <hr />
 
+            <h2>Search For The Youngest CEOs Per Degree</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="submit" value="Search" name="searchCEOs" class="button searchButton"></p>
+            </form>
+
+            <hr />
+
         </div>
      
         <?php
@@ -164,6 +169,7 @@
         $companiesExist = False;
         $investsExists = False;
         $ActiveInExists = False;
+        $CEOexists = False;
 
         function debugAlertMessage($message) {
             //testing commit from cwl account 2
@@ -449,6 +455,45 @@
             printAboveAverageInformation($result);
         }
 
+        function handleSearchCEOs() {
+            global $db_conn, $CEOexists;
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'CEO'");
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $CEOexists = False;
+                } else if ($row[0] == 'CEO') {
+                    $CEOexists = True;
+                }
+            }
+
+            if ($CEOexists == False) {
+                executePlainSQL("CREATE TABLE CEO (ceoName char(80) PRIMARY KEY, age int, gender char(80), educationLevel char(80))");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Sundar Pichai', 50, 'MAN', 'Masters Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Tim Cook', 62, 'MAN', 'Masters Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Mary Barra', 61, 'WOMAN', 'Masters Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender) VALUES('Bill Gates', 67, 'MAN')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Andrew Witty', 58, 'MAN', 'Bachelors Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Adam Mosseri', 40, 'MAN', 'Bachelors Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Mark Zuckerberg', 42, 'MAN', 'Masters Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Elon Musk', 45, 'MAN', 'Masters Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Kiichiro Toyoda', 95, 'MAN', 'Bachelors Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('John Warnock', 67, 'MAN', 'Bachelors Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Diane Greene', 37, 'WOMAN', 'Masters Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Maxim Kolomeychenko', 51, 'MAN', 'PHD Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Guido Sacchi', 60, 'MAN', 'PHD Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Long Phan', 52, 'MAN', 'PHD Degree')");
+                executePlainSQL("INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('Ivan Klimek', 45, 'MAN', 'PHD Degree')");
+                OCICommit($db_conn);
+            }
+     
+            $result = executePlainSQL("SELECT min(age) age, educationLevel
+                                    FROM CEO
+                                    GROUP BY educationLevel
+                                    HAVING count(*) > 1");
+            printCEOInfo($result);
+        }
+
         // helper used to create the table for primary key of a table (can be used universally)
         function printNames($result, $primary_key) {
             echo "<table id=\"namesTable\" class=\"namesTable\">";
@@ -499,6 +544,17 @@
             echo "</table>";
         }
 
+        // helper used to print all info of a table
+        function printCEOInfo($result) { //prints results from a select statement
+            echo "<table id=\"CEOInfo\" class=\"infoTable\">";
+            echo "<tr><th>Age</th><th>Education Level</th></tr>";
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+                echo "<tr><td>" . $row["AGE"] . "</td><td>" . $row["EDUCATIONLEVEL"] . "</td></tr>"; //or just use "echo $row[0]"
+            }
+
+            echo "</table>";
+        }
+
         // HANDLE ALL POST ROUTES
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
@@ -513,12 +569,14 @@
                     handleCompaniesRequest();
                 } else if (array_key_exists('updateQueryRequest', $_POST)) {
                     handleUpdateRequest();
-                } else if (array_key_exists('searchIndustries', $_POST)) {
+                } else if ($_POST['searchIndustriesSubmit'] == 'Search') {
                     handleSearchIndustries();
                 } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
                     handleSearchCompanies();
                 } else if ($_POST['searchAboveAverage'] == 'Search') {
                     handleSearchAboveAverage();
+                } else if ($_POST['searchCEOs'] == 'Search') {
+                    handleSearchCEOs();
                 }
 
                 disconnectFromDB();
@@ -546,7 +604,7 @@
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || 
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || 
-            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage'])) {
+            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
