@@ -443,7 +443,7 @@
                     FROM ( SELECT A.industryName, AVG(C.growthRate) as growthRate
                         FROM Invests Inv, Company C, ActiveIn A
                         WHERE C.companyName = Inv.companyName AND A.companyName = C.companyName 
-                        AND LOWER(Inv.investorName) = '". $investorName . "' 
+                        AND LOWER(Inv.investorName) = '". strtolower($investorName) . "' 
                         GROUP BY A.industryName ) Temp 
                     WHERE Temp.growthRate > (SELECT AVG(growthRate) FROM Company)");
             printAboveAverageInformation($result);
