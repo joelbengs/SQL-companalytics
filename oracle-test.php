@@ -78,7 +78,7 @@
 
             <!--Company logo. Currently, pressing it leads to illegal URL-->
             <div class="topnav-centered">
-                <a href = "https://www.students.cs.ubc.ca/~manny07/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
+                <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
             </div>
 
             <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
