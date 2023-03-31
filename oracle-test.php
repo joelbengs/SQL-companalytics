@@ -78,7 +78,7 @@
 
             <!--Company logo. Currently, pressing it leads to illegal URL-->
             <div class="topnav-centered">
-                <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
+                <a href = "https://www.students.cs.ubc.ca/~manny07/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
             </div>
 
             <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
@@ -138,9 +138,16 @@
 
             <h2>Search Companies</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="searchCompanies" name="searchCompanies">
                 Company Name: <input type="text" name="companyName" class="searchBox">
                 <input type="submit" value="Search" name="searchCompaniesSubmit" class="button searchButton"></p>
+            </form>
+
+            <hr />
+
+            <h2>Find Above Average Industries Per Investor</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                Investor Name: <input type="text" name="investorAboveAverage" class="searchBox">
+                <input type="submit" value="Search" name="searchAboveAverage" class="button searchButton"></p>
             </form>
 
             <hr />
@@ -155,6 +162,8 @@
         $show_debug_alert_messages = False; // set to True if you want alerts to show you which methods are being triggered (see how it is used in debugAlertMessage())
         $industriesExists = False;
         $companiesExist = False;
+        $investsExists = False;
+        $ActiveInExists = False;
 
         function debugAlertMessage($message) {
             //testing commit from cwl account 2
@@ -269,6 +278,10 @@
         function handleCompaniesRequest() {
             global $db_conn, $companiesExist;
 
+            executePlainSQL("DROP TABLE Company");
+            OCICommit($db_conn);
+
+
             $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'COMPANY'");
 
             if (($row = oci_fetch_row($checkExists)) != false) {
@@ -280,13 +293,13 @@
             }
 
             if ($companiesExist == False) {
-                executePlainSQL("CREATE TABLE Company(companyName CHAR(80) PRIMARY KEY, product CHAR(80), ticker CHAR(10) UNIQUE, country CHAR(80) NOT NULL, ceo CHAR(80) NOT NULL, ceoDateStarted char(11))");
-                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, ceo, ceoDateStarted) VALUES('Apple', 'Technological Hardware', 'AAPL', 'USA', 'Tim Cook', '24-AUG-2011')");
-                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, ceo, ceoDateStarted) VALUES('Microsoft', 'Technological Software', 'MSFT', 'USA', 'Satya Nadella', '04-FEB-2014')");
-                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, ceo, ceoDateStarted) VALUES('Google', 'Technological Software', 'GOOGL', 'USA', 'Sundar Pichai', '02-OCT-2015')");
-                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, ceo, ceoDateStarted) VALUES('Tesla', 'Automobiles', 'TSLA', 'USA', 'Elon Musk', '02-OCT-2008')");
-                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, ceo, ceoDateStarted) VALUES('Rivian', 'Automobiles', 'RIVN', 'USA', 'RJ Scaringe', '07-AUG-2009')");
-                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, ceo, ceoDateStarted) VALUES('Instagram', 'Social Media', 'META', 'USA', 'Adam Mosseri', '01-OCT-2018')");
+                executePlainSQL("CREATE TABLE Company(companyName CHAR(80) PRIMARY KEY, product CHAR(80), ticker CHAR(10) UNIQUE, country CHAR(80) NOT NULL, growthRate NUMERIC(7, 2), ceo CHAR(80) NOT NULL, ceoDateStarted char(11))");
+                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('Apple', 'Technological Hardware', 'AAPL',  'USA', 0.15, 'Tim Cook', '24-AUG-2011')");
+                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('Microsoft', 'Technological Software', 'MSFT', 'USA', 0.12, 'Satya Nadella', '04-FEB-2014')");
+                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('Google', 'Technological Software', 'GOOGL', 'USA', 0.16, 'Sundar Pichai', '02-OCT-2015')");
+                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('Tesla', 'Automobiles', 'TSLA', 'USA', 0.10, 'Elon Musk', '02-OCT-2008')");
+                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('Rivian', 'Automobiles', 'RIVN', 'USA', 0.05, 'RJ Scaringe', '07-AUG-2009')");
+                executePlainSQL("INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('Instagram', 'Social Media', 'META', 'USA', 0.14, 'Adam Mosseri', '01-OCT-2018')");
 
                 OCICommit($db_conn);
             }
@@ -300,7 +313,7 @@
 
             $checkExists = executePlainSQL("SELECT table_name FROM user_tables WHERE table_name = 'INVESTOR'");
 
-             if (($row = oci_fetch_row($checkExists)) != false) {
+            if (($row = oci_fetch_row($checkExists)) != false) {
                 if ($row[0] == '') {
                     $investorExist = False;
                 } else if ($row[0] == 'INVESTOR') {
@@ -327,6 +340,9 @@
         function handleIndustriesRequest() {
             global $db_conn, $industriesExists;
 
+            executePlainSQL("DROP TABLE Industry");
+            OCICommit($db_conn);
+
             $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'INDUSTRY'");
 
             if (($row = oci_fetch_row($checkExists)) != false) {
@@ -338,13 +354,13 @@
             }
 
             if ($industriesExists == False) {
-                executePlainSQL("CREATE TABLE Industry (industryName char(80) PRIMARY KEY, growthRate NUMERIC(7, 2), averagePERatio int, averageRevenue int)");
-                executePlainSQL("INSERT INTO Industry(industryName, growthRate, averagePERatio, averageRevenue) VALUES('Mining', 0.05, 17, 20000)");
-                executePlainSQL("INSERT INTO Industry(industryName, growthRate, averagePERatio, averageRevenue) VALUES('Health', 0.1, 25, 15000)");
-                executePlainSQL("INSERT INTO Industry(industryName, growthRate, averagePERatio, averageRevenue) VALUES('Defense', 0.02, 13, 8000)");
-                executePlainSQL("INSERT INTO Industry(industryName, growthRate, averagePERatio, averageRevenue) VALUES('Technology', 0.15, 23, 12000)");
-                executePlainSQL("INSERT INTO Industry(industryName, growthRate, averagePERatio, averageRevenue) VALUES('Real Estate', 0.03, 10, 9000)");
-                executePlainSQL("INSERT INTO Industry(industryName, growthRate, averagePERatio, averageRevenue) VALUES('Automobiles', 0.03, 13, 20000)");
+                executePlainSQL("CREATE TABLE Industry (industryName char(80) PRIMARY KEY, averagePERatio int, averageRevenue int)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Mining', 17, 20000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Health', 25, 15000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Defense', 13, 8000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Technology', 23, 12000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Real Estate', 10, 9000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Automobiles', 13, 20000)");
                 OCICommit($db_conn);
             }
 
@@ -378,6 +394,61 @@
             printCompanyInformation($result);
         }
 
+        function handleSearchAboveAverage() {
+            global $db_conn, $investsExists, $ActiveInExists;
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'INVESTS'");
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $investsExists = False;
+                } else if ($row[0] == 'INVESTS') {
+                    $investsExists = True;
+                }
+            }
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'ACTIVEIN'");
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $ActiveInExists = False;
+                } else if ($row[0] == 'ACTIVEIN') {
+                    $ActiveInExists = True;
+                }
+            }
+
+            if ($investsExists == False) {
+                executePlainSQL("CREATE TABLE Invests (investorName char(80), companyName char(80), amountInvested int, PRIMARY KEY(investorName, companyName))");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Apple', 20000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Microsoft', 15000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Google', 8000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Tesla', 12000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Apple', 9000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Instagram', 20000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Tesla', 20000)");
+                OCICommit($db_conn);
+            }
+
+            if ($ActiveInExists == False) {
+                executePlainSQL("CREATE TABLE ActiveIn (companyName char(80), industryName char(80), activeSince char(80), PRIMARY KEY(companyName, industryName))");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Apple', 'Technology', '01-MAR-1976')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Microsoft', 'Technology', '04-JUL-1975')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Google', 'Technology', '04-SEP-1998')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Tesla', 'Automobiles', '01-JUL-2003')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Rivian', 'Automobiles', '08-JUN-2009')");
+                OCICommit($db_conn);
+            }
+            
+
+            $investorName = $_POST['investorAboveAverage'];
+            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' invName, Temp.industryName indName, Temp.growthRate avgGR 
+                    FROM ( SELECT A.industryName, AVG(C.growthRate) as growthRate
+                        FROM Invests Inv, Company C, ActiveIn A
+                        WHERE C.companyName = Inv.companyName AND A.companyName = C.companyName 
+                        AND LOWER(Inv.investorName) = '". $investorName . "' 
+                        GROUP BY A.industryName ) Temp 
+                    WHERE Temp.growthRate > (SELECT AVG(growthRate) FROM Company)");
+            printAboveAverageInformation($result);
+        }
+
         // helper used to create the table for primary key of a table (can be used universally)
         function printNames($result, $primary_key) {
             echo "<table id=\"namesTable\" class=\"namesTable\">";
@@ -393,10 +464,10 @@
         // helper used to print all info of a table
         function printIndustryInformation($result) { //prints results from a select statement
             echo "<table id=\"industryInfoTable\" class=\"infoTable\">";
-            echo "<tr><th>Industry Name</th><th>Growth Rate</th><th>Average PE Ratio</th><th>Average Revenue</th></tr>";
+            echo "<tr><th>Industry Name</th><th>Average PE Ratio</th><th>Average Revenue</th></tr>";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["GROWTHRATE"] . "</td><td>" . $row["AVERAGEPERATIO"] . 
+                echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["AVERAGEPERATIO"] . 
                 "</td><td>" . $row["AVERAGEREVENUE"] . "</td></tr>"; //or just use "echo $row[0]"
             }
 
@@ -406,11 +477,23 @@
         // helper used to print all info of a table
         function printCompanyInformation($result) { //prints results from a select statement
             echo "<table id=\"companyInfoTable\" class=\"infoTable\">";
-            echo "<tr><th>Company Name</th><th>Product</th><th>Ticker</th><th>Country</th><th>CEO</th><th>CEO Start Date</th></tr>";
+            echo "<tr><th>Company Name</th><th>Product</th><th>Ticker</th><th>Country</th><th>Growth Rate</th><th>CEO</th><th>CEO Start Date</th></tr>";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
                 echo "<tr><td>" . $row["COMPANYNAME"] . "</td><td>" . $row["PRODUCT"] . "</td><td>" . $row["TICKER"] . 
-                "</td><td>" . $row["COUNTRY"] . "</td><td>" . $row["CEO"] . "</td><td>" . $row["CEODATESTARTED"] . "</td></tr>"; //or just use "echo $row[0]"
+                "</td><td>" . $row["COUNTRY"] . "</td><td>" . $row["GROWTHRATE"] . "</td><td>" . $row["CEO"] . "</td><td>" . $row["CEODATESTARTED"] . "</td></tr>"; //or just use "echo $row[0]"
+            }
+
+            echo "</table>";
+        }
+
+        // helper used to print all info of a table
+        function printAboveAverageInformation($result) { //prints results from a select statement
+            echo "<table id=\"aboveAverageInfo\" class=\"infoTable\">";
+            echo "<tr><th>Investor Name</th><th>Industry Name</th><th>Growth Rate</th></tr>";
+
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+                echo "<tr><td>" . $row["INVNAME"] . "</td><td>" . $row["INDNAME"] . "</td><td>" . $row["AVGGR"] . "</td></tr>"; //or just use "echo $row[0]"
             }
 
             echo "</table>";
@@ -432,8 +515,10 @@
                     handleUpdateRequest();
                 } else if (array_key_exists('searchIndustries', $_POST)) {
                     handleSearchIndustries();
-                } else if (array_key_exists('searchCompanies', $_POST)) {
+                } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
                     handleSearchCompanies();
+                } else if ($_POST['searchAboveAverage'] == 'Search') {
+                    handleSearchAboveAverage();
                 }
 
                 disconnectFromDB();
@@ -455,12 +540,15 @@
                 echo 'alert("failed to connect to DB")';
             }
         }
-
+        
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
-		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit'])) {
+		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || 
+            isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || 
+            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage'])) {
             handlePOSTRequest();
+
         } else if (isset($_GET['countTupleRequest'])) {
             handleGETRequest();
         }
