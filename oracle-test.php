@@ -150,6 +150,14 @@
 
             <hr />
 
+            <h2>Find Industrial Commitment Per Investor</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                Investor Name: <input type="text" name="investorCommit" class="searchBox">
+                <input type="submit" value="Search" name="searchIndustrialCommit" class="button searchButton"></p>
+            </form>
+
+            <hr />
+
             <h2>Search For The Youngest CEOs Per Degree</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
                 <input type="submit" value="Search" name="searchCEOs" class="button searchButton"></p>
@@ -318,7 +326,7 @@
             }
 
             $result = executePlainSQL("SELECT companyName FROM Company");
-            printNames($result, 'companyName');
+            printNames($result, 'Company');
         }
 
         function handleInvestorsRequest() {
@@ -346,7 +354,7 @@
             }
 
             $result = executePlainSQL("SELECT investorName FROM INVESTOR");
-            printNames($result, 'investorName');
+            printNames($result, 'Investor');
         }
 
         // when the user clicks the industries button from the navigation bar (sets up the industries table if it does not already exist, displays industry names after)
@@ -378,7 +386,7 @@
             }
 
             $result = executePlainSQL("SELECT industryName FROM Industry");
-            printNames($result, 'industryName');
+            printNames($result, 'Industry');
         }
 
         // when the user clicks search on industries, displays all info relevant to that industry
@@ -450,6 +458,10 @@
                 executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Apple', 'Technology', '01-MAR-1976')");
                 executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Microsoft', 'Technology', '04-JUL-1975')");
                 executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Google', 'Technology', '04-SEP-1998')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Lockheed Martin Cop', 'Defense', '01-APR-1990')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('United Health', 'Health', '02-DEC-1994')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Barrick Gold', 'Mining', '22-FEB-1984')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Keller Williams Realty', 'Real Estate', '01-JUN-1971')");
                 executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Tesla', 'Automobiles', '01-JUL-2003')");
                 executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Rivian', 'Automobiles', '08-JUN-2009')");
                 OCICommit($db_conn);
@@ -457,7 +469,7 @@
             
 
             $investorName = $_POST['investorAboveAverage'];
-            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' invName, Temp.industryName indName, Temp.growthRate avgGR 
+            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' invName, Temp.industryName indName, ROUND(Temp.growthRate, 3) avgGR 
                     FROM ( SELECT A.industryName, AVG(C.growthRate) as growthRate
                         FROM Invests Inv, Company C, ActiveIn A
                         WHERE C.companyName = Inv.companyName AND A.companyName = C.companyName 
@@ -540,6 +552,94 @@
                                        FROM Invests
                                        GROUP BY companyName");
             printTotalInvestInfo($result);
+        }
+
+        function handleIndustrialCommit() {
+            global $db_conn, $investsExists, $ActiveInExists, $industriesExists;
+
+            executePlainSQL("DROP TABLE Industry");
+            executePlainSQL("DROP TABLE Invests");
+            executePlainSQL("DROP TABLE ActiveIn");
+            OCICommit($db_conn);
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'INDUSTRY'");
+
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $industriesExists = False;
+                } else if ($row[0] == 'INDUSTRY') {
+                    $industriesExists = True;
+                }
+            }
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'INVESTS'");
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $investsExists = False;
+                } else if ($row[0] == 'INVESTS') {
+                    $investsExists = True;
+                }
+            }
+
+            $checkExists = executePlainSQL("SELECT table_name FROM user_tables where table_name = 'ACTIVEIN'");
+            if (($row = oci_fetch_row($checkExists)) != false) {
+                if ($row[0] == '') {
+                    $ActiveInExists = False;
+                } else if ($row[0] == 'ACTIVEIN') {
+                    $ActiveInExists = True;
+                }
+            }
+
+            if ($investsExists == False) {
+                executePlainSQL("CREATE TABLE Invests (investorName char(80), companyName char(80), amountInvested int, PRIMARY KEY(investorName, companyName))");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Apple', 2000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Microsoft', 1500000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Google', 800000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Warren Buffett', 'Tesla', 1200000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Apple', 900000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Benjamin Graham', 'Rivian', 1000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Philip Fisher', 'Instagram', 2000000)");
+                executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Tesla', 2000000)");
+                OCICommit($db_conn);
+            }
+
+            if ($ActiveInExists == False) {
+                executePlainSQL("CREATE TABLE ActiveIn (companyName char(80), industryName char(80), activeSince char(80), PRIMARY KEY(companyName, industryName))");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Apple', 'Technology', '01-MAR-1976')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Microsoft', 'Technology', '04-JUL-1975')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Google', 'Technology', '04-SEP-1998')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Lockheed Martin Cop', 'Defense', '01-APR-1990')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('United Health', 'Health', '02-DEC-1994')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Barrick Gold', 'Mining', '22-FEB-1984')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Keller Williams Realty', 'Real Estate', '01-JUN-1971')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Tesla', 'Automobiles', '01-JUL-2003')");
+                executePlainSQL("INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('Rivian', 'Automobiles', '08-JUN-2009')");
+                OCICommit($db_conn);
+            }
+
+            if ($industriesExists == False) {
+                executePlainSQL("CREATE TABLE Industry (industryName char(80) PRIMARY KEY, averagePERatio int, averageRevenue int)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Mining', 17, 20000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Health', 25, 15000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Defense', 13, 8000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Technology', 23, 12000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Real Estate', 10, 9000)");
+                executePlainSQL("INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('Automobiles', 13, 20000)");
+                OCICommit($db_conn);
+            }
+
+            $investorName = $_POST['investorCommit'];
+            $result = executePlainSQL("SELECT I.industryName 
+                                        FROM Industry I 
+                                        WHERE NOT EXISTS (SELECT companyName 
+                                                        FROM ActiveIn A
+                                                        WHERE A.industryName = I.industryName
+                                                        AND NOT EXISTS ( 
+                                                        SELECT companyName 
+                                                        FROM Invests 
+                                                        WHERE LOWER(investorName) = '" . strtolower($investorName) . "'
+                                                        AND companyName = A.companyName))");
+            printNames($result, 'Industry');
         }
 
         // helper used to create the table for primary key of a table (can be used universally)
@@ -638,6 +738,8 @@
                     handleSearchCEOs();
                 } else if ($_POST['searchTotalInvest'] == 'Search') {
                     handleTotalInvest();
+                } else if ($_POST['searchIndustrialCommit'] == 'Search') {
+                    handleIndustrialCommit();
                 }
 
                 disconnectFromDB();
@@ -666,7 +768,7 @@
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || 
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || 
             isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || 
-            isset($_POST['searchTotalInvest'])) {
+            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
