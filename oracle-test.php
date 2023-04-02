@@ -202,12 +202,24 @@
             <h2>Add Company</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addCompany" name="addCompany">
-                Company Name: <input type="text" name="addCompanyName" class="searchBox">
-                Company Product: <input type="text" name="addCompanyProduct" class="searchBox">
-                Company Ticker: <input type="text" name="addCompanyTicker" class="searchBox">
-                Company Country: <input type="text" name="addCompanyCountry" class="searchBox">
-                Company CEO: <input type="text" name="addCompanyCEO" class="searchBox">
+                Name: <input type="text" name="addCompanyName" class="searchBox">
+                Product: <input type="text" name="addCompanyProduct" class="searchBox">
+                Ticker: <input type="text" name="addCompanyTicker" class="searchBox">
+                Country: <input type="text" name="addCompanyCountry" class="searchBox">
+                CEO: <input type="text" name="addCompanyCEO" class="searchBox">
+                Start Date: <input type="text" name="addCompanyDate" class="searchBox">
+                Growth Rate: <input type="text" name="addCompanyGrowth" class="searchBox">
                 <input type="submit" value="Search" name="addCompanySubmit" class="button searchButton"></p>
+            </form>
+
+            <hr />
+            <h2>Add Industry</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addIndustry" name="addIndustry">
+                Name: <input type="text" name="addIndustryName" class="searchBox">
+                Average PE Ratio: <input type="text" name="addIndustryPE" class="searchBox">
+                Average Revenue: <input type="text" name="addIndustryRevenue" class="searchBox">
+                <input type="submit" value="Search" name="addIndustrySubmit" class="button searchButton"></p>
             </form>
 
         </div>
@@ -299,7 +311,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_nafis01", "a21977822", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -366,13 +378,31 @@
             $companyTicker = $_POST['addCompanyTicker'];
             $companyCountry = $_POST['addCompanyCountry'];
             $companyCEO = $_POST['addCompanyCEO'];
+            $companyCEOStartDate = $_POST['addCompanyDate'];
+            $companyGrowthRate = $_POST['addCompanyGrowth'];
 
-            $insertString = "INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('$company', '$companyProduct', '$companyTicker', '$companyCountry', 0.16, '$companyCEO', '02-OCT-2015')";
+            $insertString = "INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('$company', '$companyProduct', '$companyTicker', '$companyCountry', $companyGrowthRate, '$companyCEO', '$companyCEOStartDate')";
 
-            // need to check if company exists or not, and to make foreign keys in table
+            // TODO: need to check if company exists or not, and to make foreign keys in table
             echo $insertString;
             executePlainSQL($insertString);
-            echo "Inserted";
+            echo "Inserted Company";
+            OCICommit($db_conn);
+        }
+
+        function handleMakeIndustry() {
+            global $db_conn;
+
+            $industry = $_POST['addIndustryName'];
+            $industryPERatio = $_POST['addIndustryPE'];
+            $industryRevenue = $_POST['addIndustryRevenue'];
+
+            $insertString = "INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('$industry', $industryPERatio, $industryRevenue)";
+
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            echo $insertString;
+            executePlainSQL($insertString);
+            echo "Inserted Industry";
             OCICommit($db_conn);
         }
 
@@ -629,6 +659,8 @@
                     handleIndustrialCommit();
                 } else if (array_key_exists('addCompanySubmit', $_POST)) {
                     handleMakeCompany();
+                } else if (array_key_exists('addIndustrySubmit', $_POST)) {
+                    handleMakeIndustry();
                 }
 
                 disconnectFromDB();
@@ -657,7 +689,7 @@
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) ||
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) ||
             isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) ||
-            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit'])) {
+            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
