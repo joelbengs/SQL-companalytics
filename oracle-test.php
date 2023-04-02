@@ -132,6 +132,8 @@
                 <h2>Search Industries</h2>
                 <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
                     Industry Name: <input type="text" name="industryName" class="searchBox">
+                    PE Ratio: <input type="text" name="peRatio" class="searchBox">
+                    Revenue: <input type="text" name="revenue" class="searchBox">
                     <input type="submit" value="Search" name="searchIndustriesSubmit" class="button searchButton"></p>
                 </form>
             </div>
@@ -353,11 +355,29 @@
             global $db_conn;
 
             $industryName = $_POST['industryName'];
-            if ($industryName == '') {
-                $result = executePlainSQL("SELECT * FROM Industry");
-            } else {
-                $result = executePlainSQL("SELECT * FROM Industry WHERE LOWER(industryName) = '" . strtolower($industryName) . "'");
+            $peRatio = $_POST['peRatio'];
+            $revenue = $_POST['revenue'];
+            $sql = "SELECT * FROM Industry";
+
+            if ($industryName != '') {
+                $sql .= " WHERE LOWER(industryName) = '" . strtolower($industryName) . "'";
+            } 
+            if ($peRatio != '') {
+                if (strpos($sql, 'WHERE') !== false) {
+                    $sql .= " AND AVERAGEPERATIO = " . $peRatio . "";
+                } else {
+                    $sql .= " WHERE AVERAGEPERATIO = " . $peRatio . "";
+                }
             }
+
+            if ($revenue != '') {
+                if (strpos($sql, 'WHERE') !== false) {
+                    $sql .= " AND AVERAGEREVENUE = " . $revenue . "";
+                } else {
+                    $sql .= " WHERE AVERAGEREVENUE = " . $revenue . "";
+                }
+            }
+            $result = executePlainSQL($sql);
             printIndustryInformation($result);
         }
 
