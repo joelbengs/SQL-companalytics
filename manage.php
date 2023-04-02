@@ -190,6 +190,35 @@
                         </select>
                 <input type="submit" value="Select" name="viewDataInTables" class="button searchButton"></p>
             </form>
+
+            <?php
+            // gets the attributes for each table and adds to array to later use in the form checkbox
+            if ($_POST['viewTableData'] != '') {
+                $attributeOptions = [];
+                $tableName = $_POST['viewTableData'];
+                if (connectToDB()) {
+                    $result = executePlainSQL("SELECT * FROM $tableName");
+                    $numAttributes = oci_num_fields($result);
+                    for ($i = 1; $i <= $numAttributes; $i++) {
+                        array_push($attributeOptions, oci_field_name($result, $i));
+                    }
+            ?>
+
+            <form method="POST" action="manage.php">
+                <?php
+                    // loops through each attribute and creates a dynamic checkbox with attribute name
+                    foreach ($attributeOptions as $attr) {
+                        echo $attr . "<input type=\"checkbox\" name=\"selectedAttributes[]\" value=\"" . $attr . "\">";
+                    } 
+                echo "<input type=\"hidden\" name=\"tableName\" value=\"" . $tableName . "\">"; ?>
+                <input type="submit" value="Select" name="selectedAttributesSubmit" class="button searchButton"></p>
+            </form>
+
+            <?php
+                    } // ends if statement for connecting to DB
+                }   // ends overall if statement for showing attribute options
+            ?>
+
             <hr />
 
             <?php 
@@ -527,6 +556,22 @@
             printAllData($result);
         }
 
+        function handleViewSelectedData() {
+            global $db_conn;
+            
+            $selectedAttrs = [];
+            $selectedAttrs = $_POST['selectedAttributes'];
+            $sql = "SELECT ";
+            foreach ($selectedAttrs as $attr) {
+                $sql .= "$attr, ";
+            }
+            $sql = rtrim($sql, ", ");
+            $tableName = $_POST['tableName'];
+            $sql .= " FROM $tableName";
+            $result = executePlainSQL($sql);
+            printAllData($result);
+        }
+
         function printAllData($result) {
             echo "<table id=\"allDataTable\" class=\"infoTable\">";
             $headers = "<tr>";
@@ -560,13 +605,15 @@
                 } else if (array_key_exists('addInvestorSubmit', $_POST)) {
                     handleMakeInvestor();
                 } else if (array_key_exists('viewDataInTables', $_POST)) {
-                    handleViewData();
+                    //handleViewData();
                 } else if (array_key_exists('updateIndustrySubmit', $_POST)) {
                     handleUpdateIndustry();
                 } else if (array_key_exists('updateInvestorSubmit', $_POST)) {
                     handleUpdateInvestor();
                 } else if (array_key_exists('updateCompanySubmit', $_POST)) {
                     handleUpdateCompany();
+                } else if (array_key_exists('selectedAttributesSubmit', $_POST)) {
+                    handleViewSelectedData();
                 }
 
                 disconnectFromDB();
@@ -579,7 +626,8 @@
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) || isset($_POST['addInvestorSubmit']) || 
-            isset($_POST['viewDataInTables']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || isset($_POST['updateCompanySubmit'])) {
+            isset($_POST['viewDataInTables']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
+            isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit'])) {
             handlePOSTRequest();
         }
 		?>
