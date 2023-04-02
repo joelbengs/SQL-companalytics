@@ -222,6 +222,19 @@
                 <input type="submit" value="Search" name="addIndustrySubmit" class="button searchButton"></p>
             </form>
 
+            <hr />
+            <h2>Add Investor</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addInvestor" name="addInvestor">
+                Name: <input type="text" name="addInvestorName" class="searchBox">
+                Venture Capitalist: <select name="addInvestorVC" id="addInvestorVC">
+                    <option value=""></option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                <input type="submit" value="Search" name="addInvestorSubmit" class="button searchButton"></p>
+            </form>
+
         </div>
      
         <?php
@@ -311,7 +324,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_nafis01", "a21977822", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -403,6 +416,27 @@
             echo $insertString;
             executePlainSQL($insertString);
             echo "Inserted Industry";
+            OCICommit($db_conn);
+        }
+
+        function handleMakeInvestor() {
+            global $db_conn;
+
+            $investor = $_POST['addInvestorName'];
+            $isVC = $_POST['addInvestorVC'];
+            if ($isVC == "True") {
+                $investorVC = 1;
+            } else {
+                $investorVC = 0;
+            }
+
+
+            $insertString = "INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('$investor', $investorVC)";
+
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            echo $insertString;
+            executePlainSQL($insertString);
+            echo "Inserted Investor";
             OCICommit($db_conn);
         }
 
@@ -661,6 +695,8 @@
                     handleMakeCompany();
                 } else if (array_key_exists('addIndustrySubmit', $_POST)) {
                     handleMakeIndustry();
+                } else if (array_key_exists('addInvestorSubmit', $_POST)) {
+                    handleMakeInvestor();
                 }
 
                 disconnectFromDB();
@@ -689,7 +725,8 @@
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) ||
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) ||
             isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) ||
-            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit'])) {
+            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) ||
+            isset($_POST['addInvestorSubmit'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
