@@ -228,11 +228,11 @@
             <h2>Add Company</h2>
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addCompany" name="addCompany">
-                Name: <input type="text" name="addCompanyName" class="searchBox">
+                Name: <input type="text" name="addCompanyName" class="searchBox" required>
                 Product: <input type="text" name="addCompanyProduct" class="searchBox">
-                Ticker: <input type="text" name="addCompanyTicker" class="searchBox">
-                Country: <input type="text" name="addCompanyCountry" class="searchBox">
-                CEO: <input type="text" name="addCompanyCEO" class="searchBox">
+                Ticker: <input type="text" name="addCompanyTicker" class="searchBox" required>
+                Country: <input type="text" name="addCompanyCountry" class="searchBox" required>
+                CEO: <input type="text" name="addCompanyCEO" class="searchBox" required>
                 Start Date: <input type="text" name="addCompanyDate" class="searchBox">
                 Growth Rate: <input type="text" name="addCompanyGrowth" class="searchBox">
                 <input type="submit" value="Add" name="addCompanySubmit" class="button searchButton"></p>
@@ -247,7 +247,7 @@
             <h2>Add Industry</h2>
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addIndustry" name="addIndustry">
-                Name: <input type="text" name="addIndustryName" class="searchBox">
+                Name: <input type="text" name="addIndustryName" class="searchBox" required>
                 Average PE Ratio: <input type="text" name="addIndustryPE" class="searchBox">
                 Average Revenue: <input type="text" name="addIndustryRevenue" class="searchBox">
                 <input type="submit" value="Add" name="addIndustrySubmit" class="button searchButton"></p>
@@ -262,7 +262,7 @@
             <h2>Add Investor</h2>
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addInvestor" name="addInvestor">
-                Name: <input type="text" name="addInvestorName" class="searchBox">
+                Name: <input type="text" name="addInvestorName" class="searchBox" required>
                 Venture Capitalist: <select name="addInvestorVC" id="addInvestorVC">
                     <option value=""></option>
                     <option value="True">True</option>
@@ -279,7 +279,7 @@
             <h2>Update Company</h2>
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="updateCompany" name="updateCompany">
-                Name: <input type="text" name="updateCompanyName" class="searchBox">
+                Name: <input type="text" name="updateCompanyName" class="searchBox" required>
                 Product: <input type="text" name="updateCompanyProduct" class="searchBox">
                 Ticker: <input type="text" name="updateCompanyTicker" class="searchBox">
                 CEO: <input type="text" name="updateCompanyCEO" class="searchBox">
@@ -298,7 +298,7 @@
             <h2>Update Industry</h2>
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="updateIndustry" name="updateIndustry">
-                Name: <input type="text" name="updateIndustryName" class="searchBox">
+                Name: <input type="text" name="updateIndustryName" class="searchBox" required>
                 Average PE Ratio: <input type="text" name="updateIndustryPE" class="searchBox">
                 Average Revenue: <input type="text" name="updateIndustryRevenue" class="searchBox">
                 <input type="submit" value="Update" name="updateIndustrySubmit" class="button searchButton"></p>
@@ -312,7 +312,7 @@
             <h2>Update Investor</h2>
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="updateInvestor" name="updateInvestor">
-                Name: <input type="text" name="updateInvestorName" class="searchBox">
+                Name: <input type="text" name="updateInvestorName" class="searchBox" required>
                 Venture Capitalist: <select name="updateInvestorVC" id="updateInvestorVC">
                     <option value=""></option>
                     <option value="True">True</option>
