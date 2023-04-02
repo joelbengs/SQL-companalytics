@@ -213,6 +213,19 @@
             </form>
 
             <hr />
+            <h2>Update Company</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateCompany" name="updateCompany">
+                Name: <input type="text" name="updateCompanyName" class="searchBox">
+                Product: <input type="text" name="updateCompanyProduct" class="searchBox">
+                Ticker: <input type="text" name="updateCompanyTicker" class="searchBox">
+                CEO: <input type="text" name="updateCompanyCEO" class="searchBox">
+                Start Date: <input type="text" name="updateCompanyDate" class="searchBox">
+                Growth Rate: <input type="text" name="updateCompanyGrowth" class="searchBox">
+                <input type="submit" value="Search" name="updateCompanySubmit" class="button searchButton"></p>
+            </form>
+
+            <hr />
             <h2>Add Industry</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addIndustry" name="addIndustry">
@@ -349,7 +362,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_nafis01", "a21977822", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -452,6 +465,24 @@
             $industryRevenue = $_POST['updateIndustryRevenue'];
 
             $insertString = "UPDATE Industry SET averagePERatio = $industryPERatio, averageRevenue = $industryRevenue WHERE industryName = '$industry'";
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            echo $insertString;
+            executePlainSQL($insertString);
+            echo "Updated Industry";
+            OCICommit($db_conn);
+        }
+
+        function handleUpdateCompany() {
+            global $db_conn;
+
+            $company = $_POST['updateCompanyName'];
+            $companyProduct = $_POST['updateCompanyProduct'];
+            $companyTicker = $_POST['updateCompanyTicker'];
+            $companyCEO = $_POST['updateCompanyCEO'];
+            $companyCEOStartDate = $_POST['updateCompanyDate'];
+            $companyGrowthRate = $_POST['updateCompanyGrowth'];
+
+            $insertString = "UPDATE Company SET product = '$companyProduct', ticker = '$companyTicker', ceo = '$companyCEO', ceoDateStarted = '$companyCEOStartDate', growthRate = $companyGrowthRate WHERE companyName = '$company'";
             // TODO: need to check if company exists or not, and to make foreign keys in table
             echo $insertString;
             executePlainSQL($insertString);
@@ -760,6 +791,8 @@
                     handleUpdateIndustry();
                 } else if (array_key_exists('updateInvestorSubmit', $_POST)) {
                     handleUpdateInvestor();
+                } else if (array_key_exists('updateCompanySubmit', $_POST)) {
+                    handleUpdateCompany();
                 }
 
                 disconnectFromDB();
@@ -789,7 +822,7 @@
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) ||
             isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) ||
             isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) ||
-            isset($_POST['addInvestorSubmit']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit'])) {
+            isset($_POST['addInvestorSubmit']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || isset($_POST['updateCompanySubmit'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
