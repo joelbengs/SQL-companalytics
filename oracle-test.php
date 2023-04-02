@@ -119,6 +119,14 @@
 
             <?= '<a href="#" onclick="document.getElementById(\'showCompanies\').submit(); ">Companies</a>'; ?>
 
+             <!--MANAGE-->
+             <form method="POST" id="managePage" action="manage.php" style="display: none;">
+                <input type="hidden" id="goToManage" value="manage" name="goToManage">
+                <p><input type="submit" value="manage" name="manage"></p>
+            </form>
+
+            <?= '<a href="#" onclick="document.getElementById(\'managePage\').submit(); ">Manage</a>'; ?>
+
             <div class="topnav-right">
                 <?= '<a>Contact Us</a>'; ?>
                 <?= '<a>About</a>'; ?>
@@ -199,77 +207,6 @@
             </form>
 
             <hr />
-            <h2>Add Company</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="addCompany" name="addCompany">
-                Name: <input type="text" name="addCompanyName" class="searchBox">
-                Product: <input type="text" name="addCompanyProduct" class="searchBox">
-                Ticker: <input type="text" name="addCompanyTicker" class="searchBox">
-                Country: <input type="text" name="addCompanyCountry" class="searchBox">
-                CEO: <input type="text" name="addCompanyCEO" class="searchBox">
-                Start Date: <input type="text" name="addCompanyDate" class="searchBox">
-                Growth Rate: <input type="text" name="addCompanyGrowth" class="searchBox">
-                <input type="submit" value="Search" name="addCompanySubmit" class="button searchButton"></p>
-            </form>
-
-            <hr />
-            <h2>Update Company</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="updateCompany" name="updateCompany">
-                Name: <input type="text" name="updateCompanyName" class="searchBox">
-                Product: <input type="text" name="updateCompanyProduct" class="searchBox">
-                Ticker: <input type="text" name="updateCompanyTicker" class="searchBox">
-                CEO: <input type="text" name="updateCompanyCEO" class="searchBox">
-                Start Date: <input type="text" name="updateCompanyDate" class="searchBox">
-                Growth Rate: <input type="text" name="updateCompanyGrowth" class="searchBox">
-                <input type="submit" value="Search" name="updateCompanySubmit" class="button searchButton"></p>
-            </form>
-
-            <hr />
-            <h2>Add Industry</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="addIndustry" name="addIndustry">
-                Name: <input type="text" name="addIndustryName" class="searchBox">
-                Average PE Ratio: <input type="text" name="addIndustryPE" class="searchBox">
-                Average Revenue: <input type="text" name="addIndustryRevenue" class="searchBox">
-                <input type="submit" value="Search" name="addIndustrySubmit" class="button searchButton"></p>
-            </form>
-
-            <hr />
-            <h2>Update Industry</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="updateIndustry" name="updateIndustry">
-                Name: <input type="text" name="updateIndustryName" class="searchBox">
-                Average PE Ratio: <input type="text" name="updateIndustryPE" class="searchBox">
-                Average Revenue: <input type="text" name="updateIndustryRevenue" class="searchBox">
-                <input type="submit" value="Search" name="updateIndustrySubmit" class="button searchButton"></p>
-            </form>
-
-            <hr />
-            <h2>Add Investor</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="addInvestor" name="addInvestor">
-                Name: <input type="text" name="addInvestorName" class="searchBox">
-                Venture Capitalist: <select name="addInvestorVC" id="addInvestorVC">
-                    <option value=""></option>
-                    <option value="True">True</option>
-                    <option value="False">False</option>
-                </select>
-                <input type="submit" value="Search" name="addInvestorSubmit" class="button searchButton"></p>
-            </form>
-
-            <hr />
-            <h2>Update Investor</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                <input type="hidden" id="updateInvestor" name="updateInvestor">
-                Name: <input type="text" name="updateInvestorName" class="searchBox">
-                Venture Capitalist: <select name="updateInvestorVC" id="updateInvestorVC">
-                    <option value=""></option>
-                    <option value="True">True</option>
-                    <option value="False">False</option>
-                </select>
-                <input type="submit" value="Search" name="updateInvestorSubmit" class="button searchButton"></p>
-            </form>
 
         </div>
      
@@ -354,7 +291,7 @@
                 }
             }
         }
-        // TODO: add option for user to specify a company is iinvested in by...
+        // TODO: add option for user to specify a company is invested in by...
         // TODO: add dynamic creation of tuples in ceo tables and other
 
         function connectToDB() {
@@ -403,14 +340,14 @@
             global $db_conn;
 
             $result = executePlainSQL("SELECT companyName FROM Company");
-            printNames($result, 'Company');
+            printAllData($result);
         }
 
         function handleInvestorsRequest() {
             global $db_conn;
 
             $result = executePlainSQL("SELECT investorName FROM Investor");
-            printNames($result, 'Investor');
+            printAllData($result);
         }
 
         // when the user clicks the industries button from the navigation bar (sets up the industries table if it does not already exist, displays industry names after)
@@ -418,116 +355,7 @@
             global $db_conn;
 
             $result = executePlainSQL("SELECT industryName FROM Industry");
-            printNames($result, 'Industry');
-        }
-
-        function handleMakeCompany() {
-            global $db_conn;
-
-            $company = $_POST['addCompanyName'];
-            $companyProduct = $_POST['addCompanyProduct'];
-            $companyTicker = $_POST['addCompanyTicker'];
-            $companyCountry = $_POST['addCompanyCountry'];
-            $companyCEO = $_POST['addCompanyCEO'];
-            $companyCEOStartDate = $_POST['addCompanyDate'];
-            $companyGrowthRate = $_POST['addCompanyGrowth'];
-
-            $insertString = "INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('$company', '$companyProduct', '$companyTicker', '$companyCountry', $companyGrowthRate, '$companyCEO', '$companyCEOStartDate')";
-
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            echo $insertString;
-            executePlainSQL($insertString);
-            echo "Inserted Company";
-            OCICommit($db_conn);
-        }
-
-        function handleMakeIndustry() {
-            global $db_conn;
-
-            $industry = $_POST['addIndustryName'];
-            $industryPERatio = $_POST['addIndustryPE'];
-            $industryRevenue = $_POST['addIndustryRevenue'];
-
-            $insertString = "INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('$industry', $industryPERatio, $industryRevenue)";
-
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            echo $insertString;
-            executePlainSQL($insertString);
-            echo "Inserted Industry";
-            OCICommit($db_conn);
-        }
-
-        function handleUpdateIndustry() {
-            global $db_conn;
-
-            $industry = $_POST['updateIndustryName'];
-            $industryPERatio = $_POST['updateIndustryPE'];
-            $industryRevenue = $_POST['updateIndustryRevenue'];
-
-            $insertString = "UPDATE Industry SET averagePERatio = $industryPERatio, averageRevenue = $industryRevenue WHERE industryName = '$industry'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            echo $insertString;
-            executePlainSQL($insertString);
-            echo "Updated Industry";
-            OCICommit($db_conn);
-        }
-
-        function handleUpdateCompany() {
-            global $db_conn;
-
-            $company = $_POST['updateCompanyName'];
-            $companyProduct = $_POST['updateCompanyProduct'];
-            $companyTicker = $_POST['updateCompanyTicker'];
-            $companyCEO = $_POST['updateCompanyCEO'];
-            $companyCEOStartDate = $_POST['updateCompanyDate'];
-            $companyGrowthRate = $_POST['updateCompanyGrowth'];
-
-            $insertString = "UPDATE Company SET product = '$companyProduct', ticker = '$companyTicker', ceo = '$companyCEO', ceoDateStarted = '$companyCEOStartDate', growthRate = $companyGrowthRate WHERE companyName = '$company'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            echo $insertString;
-            executePlainSQL($insertString);
-            echo "Updated Industry";
-            OCICommit($db_conn);
-        }
-
-        function handleMakeInvestor() {
-            global $db_conn;
-
-            $investor = $_POST['addInvestorName'];
-            $isVC = $_POST['addInvestorVC'];
-            if ($isVC == "True") {
-                $investorVC = 1;
-            } else {
-                $investorVC = 0;
-            }
-
-
-            $insertString = "INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('$investor', $investorVC)";
-
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            echo $insertString;
-            executePlainSQL($insertString);
-            echo "Inserted Investor";
-            OCICommit($db_conn);
-        }
-
-        function handleUpdateInvestor() {
-            global $db_conn;
-
-            $investor = $_POST['updateInvestorName'];
-            $isVC = $_POST['updateInvestorVC'];
-            if ($isVC == "True") {
-                $investorVC = 1;
-            } else {
-                $investorVC = 0;
-            }
-
-            $insertString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE investorName = '$investor'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            echo $insertString;
-            executePlainSQL($insertString);
-            echo "Updated Investor";
-            OCICommit($db_conn);
+            printAllData($result);
         }
 
         // when the user clicks search on industries, displays all info relevant to that industry
@@ -558,22 +386,21 @@
                 }
             }
             $result = executePlainSQL($sql);
-            printIndustryInformation($result);
+            printAllData($result);
         }
 
         // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchInvestors() {
             global $db_conn;
-
             $investorName = $_POST['investorName'];
             if ($investorName == '') {
                 $resultA = executePlainSQL("SELECT * FROM Investor");
-                printInvestorInformation($resultA);
+                printAllData($resultA);
             } else {
                 $resultA = executePlainSQL("SELECT * FROM Investor WHERE LOWER(investorName) = '" . strtolower($investorName) . "'");
                 $resultB = executePlainSQL("SELECT I.companyName, I.amountInvested, C.country, A.industryName FROM Invests I, Company C, ActiveIn A WHERE I.companyName = C.companyName AND C.companyName = A.companyName AND LOWER(investorName) = '" . strtolower($investorName) . "'");
-                printInvestorInformation($resultA);
-                printInvestments($resultB);
+                printAllData($resultA);
+                printAllData($resultB);
             }
         }
 
@@ -588,7 +415,7 @@
             } else {
                 $result = executePlainSQL("SELECT * FROM Company WHERE LOWER(companyName) = '" . strtolower($companyName) . "'");
             }
-            printCompanyInformation($result);
+            printAllData($result);
         }
 
         function handleSearchAboveAverage() {
@@ -602,7 +429,7 @@
                                             AND LOWER(Inv.investorName) = '". strtolower($investorName) . "' 
                                             GROUP BY A.industryName ) Temp 
                                         WHERE Temp.growthRate > (SELECT AVG(growthRate) FROM Company)");
-            printAboveAverageInformation($result);
+            printAllData($result);
         }
 
         function handleSearchCEOs() {
@@ -614,7 +441,7 @@
                                     WHERE gender = '" . $gender . "'
                                     GROUP BY educationLevel
                                     HAVING count(*) > 1");
-            printCEOInfo($result);
+            printAllData($result);
         }
 
         function handleTotalInvest() {
@@ -626,7 +453,7 @@
                                        WHERE LOWER(investorName) = '" . strtolower($investorName) . "'
                                        AND AI.companyName = I.companyName
                                        GROUP BY AI.industryName");
-            printTotalInvestInfo($result);
+            printAllData($result);
         }
 
         function handleIndustrialCommit() {
@@ -642,112 +469,26 @@
                                                         FROM Invests 
                                                         WHERE LOWER(investorName) = '" . strtolower($investorName) . "'
                                                         AND companyName = A.companyName))");
-            printNames($result, 'Industry');
+            printAllData($result);
         }
 
-        // when the user clicks search on industries, displays all info relevant to that industry
-
-        // helper used to create the table for primary key of a table (can be used universally)
-        function printNames($result, $primary_key) {
-            echo "<table id=\"namesTable\" class=\"namesTable\">";
-            echo "<tr><th>" . $primary_key . "</th></tr>";
-
-            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row[0] . "</td></tr>"; //or just use "echo $row[0]"
+        function printAllData($result) {
+            echo "<table id=\"allDataTable\" class=\"infoTable\">";
+            $headers = "<tr>";
+            $numAttributes = oci_num_fields($result);
+            for ($i = 1; $i <= $numAttributes; $i++) {
+                $headers .= "<th>" . oci_field_name($result, $i) . "</th>";
             }
-
-            echo "</table>";
-        }
-
-        // helper used to print all info of a table
-        function printIndustryInformation($result) { //prints results from a select statement
-            echo "<table id=\"industryInfoTable\" class=\"infoTable\">";
-            echo "<tr><th>Industry Name</th><th>Average PE Ratio</th><th>Average Revenue</th></tr>";
-
+            $headers .= "</tr>";
+            echo $headers;
+            
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["AVERAGEPERATIO"] .
-                "</td><td>" . $row["AVERAGEREVENUE"] . "</td></tr>"; //or just use "echo $row[0]"
-            }
-
-            echo "</table>";
-        }
-
-        // helper used to print all info of a table
-        function printInvestorInformation($result) {
-            echo "<table id=\"investorInfoTable\" class=\"infoTable\">";
-            echo "<tr><th>Investor Name</th><th>Venture Capitalist?</th></tr>";
-
-            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr>
-                        <td>" . $row["INVESTORNAME"] . "</td>
-                        <td>" . ($row["ISVENTURECAPITALIST"] ? 'Yes' : 'No') . "</td>
-                    </tr>";
-            }
-
-            echo "</table>";
-        }
-
-        function printInvestments($result) {
-            echo "<table id=\"investmentsInfoTable\" class=\"infoTable\">";
-                echo "<tr>
-                        <th>Investment</th>
-                        <th>Amount Invested</th>
-                        <th>Industry</th>
-                        <th>Country</th>
-                    </tr>";
-                while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                    echo "<tr>
-                            <td>" . $row["COMPANYNAME"] . "</td>
-                            <td>" . $row["AMOUNTINVESTED"] . "</td>
-                            <td>" . $row["INDUSTRYNAME"] . "</td>
-                            <td>" . $row["COUNTRY"] . "</td>
-                        </tr>";
+                $rows = "<tr>";
+                for ($i = 0; $i < $numAttributes; $i++) {
+                    $rows .= "<td>" . $row[$i] . "</td>";
                 }
-            echo "</table>";
-        }
-
-        // helper used to print all info of a table
-        function printCompanyInformation($result) { //prints results from a select statement
-            echo "<table id=\"companyInfoTable\" class=\"infoTable\">";
-            echo "<tr><th>Company Name</th><th>Product</th><th>Ticker</th><th>Country</th><th>Growth Rate</th><th>CEO</th><th>CEO Start Date</th></tr>";
-
-            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["COMPANYNAME"] . "</td><td>" . $row["PRODUCT"] . "</td><td>" . $row["TICKER"] . 
-                "</td><td>" . $row["COUNTRY"] . "</td><td>" . $row["GROWTHRATE"] . "</td><td>" . $row["CEO"] . "</td><td>" . $row["CEODATESTARTED"] . "</td></tr>"; //or just use "echo $row[0]"
-            }
-
-            echo "</table>";
-        }
-
-        // helper used to print all info of a table
-        function printAboveAverageInformation($result) { //prints results from a select statement
-            echo "<table id=\"aboveAverageInfo\" class=\"infoTable\">";
-            echo "<tr><th>Investor Name</th><th>Industry Name</th><th>Growth Rate</th></tr>";
-
-            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["INVNAME"] . "</td><td>" . $row["INDNAME"] . "</td><td>" . $row["AVGGR"] . "</td></tr>"; //or just use "echo $row[0]"
-            }
-
-            echo "</table>";
-        }
-
-        // helper used to print all info of a table
-        function printCEOInfo($result) { //prints results from a select statement
-            echo "<table id=\"CEOInfo\" class=\"infoTable\">";
-            echo "<tr><th>Age</th><th>Education Level</th></tr>";
-            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["AGE"] . "</td><td>" . $row["EDUCATIONLEVEL"] . "</td></tr>"; //or just use "echo $row[0]"
-            }
-
-            echo "</table>";
-        }
-
-          // helper used to print all info of a table
-        function printTotalInvestInfo($result) { //prints results from a select statement
-            echo "<table id=\"TotalInvestInfo\" class=\"infoTable\">";
-            echo "<tr><th>Industry Name</th><th>Amount</th></tr>";
-            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+                $rows .= "</tr>";
+                echo $rows;
             }
 
             echo "</table>";
@@ -757,16 +498,12 @@
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
             if (connectToDB()) {
-                if (array_key_exists('resetTablesRequest', $_POST)) {
-                    handleResetRequest();
-                } else if (array_key_exists('showIndustriesTable', $_POST)) {
+                if (array_key_exists('showIndustriesTable', $_POST)) {
                     handleIndustriesRequest();
                 } else if (array_key_exists('showInvestorsTable', $_POST)) {
                     handleInvestorsRequest();
                 } else if (array_key_exists('showCompaniesTable', $_POST)) {
                     handleCompaniesRequest();
-                } else if (array_key_exists('updateQueryRequest', $_POST)) {
-                    handleUpdateRequest();
                 } else if ($_POST['searchIndustriesSubmit'] == 'Search') {
                     handleSearchIndustries();
                 } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
@@ -781,34 +518,7 @@
                     handleTotalInvest();
                 } else if ($_POST['searchIndustrialCommit'] == 'Search') {
                     handleIndustrialCommit();
-                } else if (array_key_exists('addCompanySubmit', $_POST)) {
-                    handleMakeCompany();
-                } else if (array_key_exists('addIndustrySubmit', $_POST)) {
-                    handleMakeIndustry();
-                } else if (array_key_exists('addInvestorSubmit', $_POST)) {
-                    handleMakeInvestor();
-                } else if (array_key_exists('updateIndustrySubmit', $_POST)) {
-                    handleUpdateIndustry();
-                } else if (array_key_exists('updateInvestorSubmit', $_POST)) {
-                    handleUpdateInvestor();
-                } else if (array_key_exists('updateCompanySubmit', $_POST)) {
-                    handleUpdateCompany();
-                }
-
-                disconnectFromDB();
-            } else {
-                echo 'alert("failed to connect to DB")';
-            }
-        }
-
-        // HANDLE ALL GET ROUTES
-	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
-        function handleGETRequest() {
-            if (connectToDB()) {
-                if (array_key_exists('countTuples', $_GET)) {
-                    handleCountRequest();
-                }
-
+                } 
                 disconnectFromDB();
             } else {
                 echo 'alert("failed to connect to DB")';
@@ -818,16 +528,13 @@
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
-		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) ||
-            isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) ||
-            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) ||
-            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) ||
-            isset($_POST['addInvestorSubmit']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || isset($_POST['updateCompanySubmit'])) {
+		if (isset($_POST['showIndustriesTable']) || isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || 
+            isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || 
+            isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || isset($_POST['searchTotalInvest']) || 
+            isset($_POST['searchIndustrialCommit'])) {
             handlePOSTRequest();
 
-        } else if (isset($_GET['countTupleRequest'])) {
-            handleGETRequest();
-        }
+        } 
 		?>
 	</body>
 </html>
