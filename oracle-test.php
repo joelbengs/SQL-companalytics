@@ -223,6 +223,16 @@
             </form>
 
             <hr />
+            <h2>Update Industry</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateIndustry" name="updateIndustry">
+                Name: <input type="text" name="updateIndustryName" class="searchBox">
+                Average PE Ratio: <input type="text" name="updateIndustryPE" class="searchBox">
+                Average Revenue: <input type="text" name="updateIndustryRevenue" class="searchBox">
+                <input type="submit" value="Search" name="updateIndustrySubmit" class="button searchButton"></p>
+            </form>
+
+            <hr />
             <h2>Add Investor</h2>
             <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addInvestor" name="addInvestor">
@@ -233,6 +243,19 @@
                     <option value="False">False</option>
                 </select>
                 <input type="submit" value="Search" name="addInvestorSubmit" class="button searchButton"></p>
+            </form>
+
+            <hr />
+            <h2>Update Investor</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateInvestor" name="updateInvestor">
+                Name: <input type="text" name="updateInvestorName" class="searchBox">
+                Venture Capitalist: <select name="updateInvestorVC" id="updateInvestorVC">
+                    <option value=""></option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                <input type="submit" value="Search" name="updateInvestorSubmit" class="button searchButton"></p>
             </form>
 
         </div>
@@ -318,13 +341,15 @@
                 }
             }
         }
+        // TODO: add option for user to specify a company is iinvested in by...
+        // TODO: add dynamic creation of tuples in ceo tables and other
 
         function connectToDB() {
             global $db_conn;
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_nafis01", "a21977822", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -419,6 +444,21 @@
             OCICommit($db_conn);
         }
 
+        function handleUpdateIndustry() {
+            global $db_conn;
+
+            $industry = $_POST['updateIndustryName'];
+            $industryPERatio = $_POST['updateIndustryPE'];
+            $industryRevenue = $_POST['updateIndustryRevenue'];
+
+            $insertString = "UPDATE Industry SET averagePERatio = $industryPERatio, averageRevenue = $industryRevenue WHERE industryName = '$industry'";
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            echo $insertString;
+            executePlainSQL($insertString);
+            echo "Updated Industry";
+            OCICommit($db_conn);
+        }
+
         function handleMakeInvestor() {
             global $db_conn;
 
@@ -437,6 +477,25 @@
             echo $insertString;
             executePlainSQL($insertString);
             echo "Inserted Investor";
+            OCICommit($db_conn);
+        }
+
+        function handleUpdateInvestor() {
+            global $db_conn;
+
+            $investor = $_POST['updateInvestorName'];
+            $isVC = $_POST['updateInvestorVC'];
+            if ($isVC == "True") {
+                $investorVC = 1;
+            } else {
+                $investorVC = 0;
+            }
+
+            $insertString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE investorName = '$investor'";
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            echo $insertString;
+            executePlainSQL($insertString);
+            echo "Updated Investor";
             OCICommit($db_conn);
         }
 
@@ -697,6 +756,10 @@
                     handleMakeIndustry();
                 } else if (array_key_exists('addInvestorSubmit', $_POST)) {
                     handleMakeInvestor();
+                } else if (array_key_exists('updateIndustrySubmit', $_POST)) {
+                    handleUpdateIndustry();
+                } else if (array_key_exists('updateInvestorSubmit', $_POST)) {
+                    handleUpdateInvestor();
                 }
 
                 disconnectFromDB();
@@ -726,7 +789,7 @@
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) ||
             isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) ||
             isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) ||
-            isset($_POST['addInvestorSubmit'])) {
+            isset($_POST['addInvestorSubmit']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
