@@ -345,11 +345,14 @@
 
             $investorName = $_POST['investorName'];
             if ($investorName == '') {
-                $result = executePlainSQL("SELECT * FROM Investor");
+                $resultA = executePlainSQL("SELECT * FROM Investor");
+                printInvestorInformation($resultA);
             } else {
-                $result = executePlainSQL("SELECT * FROM Investor WHERE LOWER(investorName) = '" . strtolower($investorName) . "'");
+                $resultA = executePlainSQL("SELECT * FROM Investor WHERE LOWER(investorName) = '" . strtolower($investorName) . "'");
+                $resultB = executePlainSQL("SELECT I.companyName, I.amountInvested, C.country, A.industryName FROM Invests I, Company C, ActiveIn A WHERE I.companyName = C.companyName AND C.companyName = A.companyName AND LOWER(investorName) = '" . strtolower($investorName) . "'");
+                printInvestorInformation($resultA);
+                printInvestments($resultB);
             }
-            printInvestorInformation($result);
         }
 
         // when the user clicks search on industries, displays all info relevant to that industry
@@ -447,16 +450,35 @@
         
         // helper used to print all info of a table
         function printInvestorInformation($result) {
-            echo "<table id=\"industryInfoTable\" class=\"infoTable\">";
+            echo "<table id=\"investorInfoTable\" class=\"infoTable\">";
             echo "<tr><th>Investor Name</th><th>Venture Capitalist?</th></tr>";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
                 echo "<tr>
                         <td>" . $row["INVESTORNAME"] . "</td>
-                        <td>" . $row["ISVENTURECAPITALIST"] . "</td>
+                        <td>" . ($row["ISVENTURECAPITALIST"] ? 'Yes' : 'No') . "</td>
                     </tr>";
             }
 
+            echo "</table>";
+        }
+
+        function printInvestments($result) {
+            echo "<table id=\"investmentsInfoTable\" class=\"infoTable\">";
+                echo "<tr>
+                        <th>Investment</th>
+                        <th>Amont Invested</th>
+                        <th>Industry</th>
+                        <th>Country</th>
+                    </tr>";
+                while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+                    echo "<tr>
+                            <td>" . $row["COMPANYNAME"] . "</td>
+                            <td>" . $row["AMOUNTINVESTED"] . "</td>
+                            <td>" . $row["INDUSTRYNAME"] . "</td>
+                            <td>" . $row["COUNTRY"] . "</td>
+                        </tr>";  
+                }
             echo "</table>";
         }
 
