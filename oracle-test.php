@@ -287,22 +287,23 @@
             OCILogoff($db_conn);
         }
 
-        // function handleInsertRequest() {
-        //     global $db_conn;
+        /* function handleInsertRequest() {
+            global $db_conn;
 
-        //     //Getting the values from user and insert data into the table
-        //     $tuple = array (
-        //         ":bind1" => $_POST['insNo'],
-        //         ":bind2" => $_POST['insName']
-        //     );
+            //Getting the values from user and insert data into the table
+            $tuple = array (
+                ":bind1" => $_POST['insNo'],
+                ":bind2" => $_POST['insName']
+            );
 
-        //     $alltuples = array (
-        //         $tuple
-        //     );
+            $alltuples = array (
+                $tuple
+            );
 
-        //     executeBoundSQL("insert into demoTable values (:bind1, :bind2)", $alltuples);
-        //     OCICommit($db_conn);
-        // }
+            executeBoundSQL("insert into demoTable values (:bind1, :bind2)", $alltuples);
+            OCICommit($db_conn);
+        }  */
+        
         function handleCompaniesRequest() {
             global $db_conn;
 
@@ -336,6 +337,19 @@
                 $result = executePlainSQL("SELECT * FROM Industry WHERE LOWER(industryName) = '" . strtolower($industryName) . "'");
             }
             printIndustryInformation($result);
+        }
+
+        // when the user clicks search on industries, displays all info relevant to that industry
+        function handleSearchInvestors() {
+            global $db_conn;
+
+            $investorName = $_POST['investorName'];
+            if ($investorName == '') {
+                $result = executePlainSQL("SELECT * FROM Investor");
+            } else {
+                $result = executePlainSQL("SELECT * FROM Investor WHERE LOWER(investorName) = '" . strtolower($investorName) . "'");
+            }
+            printInvestorInformation($result);
         }
 
         // when the user clicks search on industries, displays all info relevant to that industry
@@ -426,6 +440,21 @@
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
                 echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["AVERAGEPERATIO"] . 
                 "</td><td>" . $row["AVERAGEREVENUE"] . "</td></tr>"; //or just use "echo $row[0]"
+            }
+
+            echo "</table>";
+        }
+        
+        // helper used to print all info of a table
+        function printInvestorInformation($result) {
+            echo "<table id=\"industryInfoTable\" class=\"infoTable\">";
+            echo "<tr><th>Investor Name</th><th>Venture Capitalist?</th></tr>";
+
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+                echo "<tr>
+                        <td>" . $row["INVESTORNAME"] . "</td>
+                        <td>" . $row["ISVENTURECAPITALIST"] . "</td>
+                    </tr>";
             }
 
             echo "</table>";
@@ -556,7 +585,6 @@
                 executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Benjamin Graham', 'Rivian', 1500000)");
                 executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Tesla', 2004000)");
                 executePlainSQL("INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('Bain Capital', 'Barrick Gold', 2004000)");
-
                 OCICommit($db_conn);
             }
 
@@ -654,6 +682,8 @@
                     handleSearchIndustries();
                 } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
                     handleSearchCompanies();
+                } else if ($_POST['searchInvestorsSubmit'] == 'Search'){
+                    handleSearchInvestors();
                 } else if ($_POST['searchAboveAverage'] == 'Search') {
                     handleSearchAboveAverage();
                 } else if ($_POST['searchCEOs'] == 'Search') {
@@ -689,7 +719,7 @@
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || 
             isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || 
-            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || 
+            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || 
             isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit'])) {
             handlePOSTRequest();
 
