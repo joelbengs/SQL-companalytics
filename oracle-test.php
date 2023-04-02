@@ -199,8 +199,16 @@
             </form>
 
             <hr />
-
-            
+            <h2>Add Company</h2>
+            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addCompany" name="addCompany">
+                Company Name: <input type="text" name="addCompanyName" class="searchBox">
+                Company Product: <input type="text" name="addCompanyProduct" class="searchBox">
+                Company Ticker: <input type="text" name="addCompanyTicker" class="searchBox">
+                Company Country: <input type="text" name="addCompanyCountry" class="searchBox">
+                Company CEO: <input type="text" name="addCompanyCEO" class="searchBox">
+                <input type="submit" value="Search" name="addCompanySubmit" class="button searchButton"></p>
+            </form>
 
         </div>
      
@@ -327,7 +335,7 @@
             executeBoundSQL("insert into demoTable values (:bind1, :bind2)", $alltuples);
             OCICommit($db_conn);
         }  */
-        
+
         function handleCompaniesRequest() {
             global $db_conn;
 
@@ -348,6 +356,24 @@
 
             $result = executePlainSQL("SELECT industryName FROM Industry");
             printNames($result, 'Industry');
+        }
+
+        function handleMakeCompany() {
+            global $db_conn;
+
+            $company = $_POST['addCompanyName'];
+            $companyProduct = $_POST['addCompanyProduct'];
+            $companyTicker = $_POST['addCompanyTicker'];
+            $companyCountry = $_POST['addCompanyCountry'];
+            $companyCEO = $_POST['addCompanyCEO'];
+
+            $insertString = "INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('$company', '$companyProduct', '$companyTicker', '$companyCountry', 0.16, '$companyCEO', '02-OCT-2015')";
+
+            // need to check if company exists or not, and to make foreign keys in table
+            echo $insertString;
+            executePlainSQL($insertString);
+            echo "Inserted";
+            OCICommit($db_conn);
         }
 
         // when the user clicks search on industries, displays all info relevant to that industry
@@ -427,7 +453,7 @@
 
         function handleSearchCEOs() {
             global $db_conn;
-            
+
             $gender = $_POST['ceoGender'];
             $result = executePlainSQL("SELECT min(age) age, educationLevel
                                     FROM CEO
@@ -465,6 +491,8 @@
             printNames($result, 'Industry');
         }
 
+        // when the user clicks search on industries, displays all info relevant to that industry
+
         // helper used to create the table for primary key of a table (can be used universally)
         function printNames($result, $primary_key) {
             echo "<table id=\"namesTable\" class=\"namesTable\">";
@@ -483,13 +511,13 @@
             echo "<tr><th>Industry Name</th><th>Average PE Ratio</th><th>Average Revenue</th></tr>";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["AVERAGEPERATIO"] . 
+                echo "<tr><td>" . $row["INDUSTRYNAME"] . "</td><td>" . $row["AVERAGEPERATIO"] .
                 "</td><td>" . $row["AVERAGEREVENUE"] . "</td></tr>"; //or just use "echo $row[0]"
             }
 
             echo "</table>";
         }
-        
+
         // helper used to print all info of a table
         function printInvestorInformation($result) {
             echo "<table id=\"investorInfoTable\" class=\"infoTable\">";
@@ -519,7 +547,7 @@
                             <td>" . $row["AMOUNTINVESTED"] . "</td>
                             <td>" . $row["INDUSTRYNAME"] . "</td>
                             <td>" . $row["COUNTRY"] . "</td>
-                        </tr>";  
+                        </tr>";
                 }
             echo "</table>";
         }
@@ -561,7 +589,7 @@
         }
 
           // helper used to print all info of a table
-          function printTotalInvestInfo($result) { //prints results from a select statement
+        function printTotalInvestInfo($result) { //prints results from a select statement
             echo "<table id=\"TotalInvestInfo\" class=\"infoTable\">";
             echo "<tr><th>Industry Name</th><th>Amount</th></tr>";
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
@@ -599,6 +627,8 @@
                     handleTotalInvest();
                 } else if ($_POST['searchIndustrialCommit'] == 'Search') {
                     handleIndustrialCommit();
+                } else if (array_key_exists('addCompanySubmit', $_POST)) {
+                    handleMakeCompany();
                 }
 
                 disconnectFromDB();
@@ -620,14 +650,14 @@
                 echo 'alert("failed to connect to DB")';
             }
         }
-        
+
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
-		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) || 
-            isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) || 
-            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || 
-            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit'])) {
+		if (isset($_POST['reset']) || isset($_POST['updateSubmit']) || isset($_POST['showIndustriesTable']) ||
+            isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || isset($_POST['searchIndustriesSubmit']) ||
+            isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) ||
+            isset($_POST['searchTotalInvest']) || isset($_POST['searchIndustrialCommit']) || isset($_POST['addCompanySubmit'])) {
             handlePOSTRequest();
 
         } else if (isset($_GET['countTupleRequest'])) {
