@@ -4,6 +4,16 @@
         <link rel="icon" type="image/x-icon" href="./104663.png">
     </head>
     <style>
+        .displayForm {
+            display: inline-block;
+            margin: 0 10px 0px 10px;
+        }
+        .displayDiv {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 5px;
+            border-style: solid;
+        }
         .namesTable {
             margin: 5px;
             width: 15%;
@@ -118,48 +128,66 @@
 
         <div id = "all-content">
 
-            <h2>Search Industries</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                Industry Name: <input type="text" name="industryName" class="searchBox">
-                <input type="submit" value="Search" name="searchIndustriesSubmit" class="button searchButton"></p>
-            </form>
+            <div class = "displayDiv">
+                <h2>Search Industries</h2>
+                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Industry Name: <input type="text" name="industryName" class="searchBox">
+                    <input type="submit" value="Search" name="searchIndustriesSubmit" class="button searchButton"></p>
+                </form>
+            </div>
 
-            <hr />
+            <!-- <hr /> -->
 
-            <h2>Search Investors</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                Investor Name: <input type="text" name="investorName" class="searchBox">
-                <input type="submit" value="Search" name="searchInvestorsSubmit" class="button searchButton"></p>
-            </form>
+            <div class = "displayDiv">
+                <h2>Search Investors</h2>
+                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Investor Name: <input type="text" name="investorName" class="searchBox">
+                    <input type="submit" value="Search" name="searchInvestorsSubmit" class="button searchButton"></p>
+                </form>
+            </div>
 
-            <hr />
+            <!-- <hr /> -->
 
-            <h2>Search Companies</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                Company Name: <input type="text" name="companyName" class="searchBox">
-                <input type="submit" value="Search" name="searchCompaniesSubmit" class="button searchButton"></p>
-            </form>
+            <div class = "displayDiv">
+                <h2>Search Companies</h2>
+                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Company Name: <input type="text" name="companyName" class="searchBox">
+                    <input type="submit" value="Search" name="searchCompaniesSubmit" class="button searchButton"></p>
+                </form>
+            </div>
 
-            <hr />
+            <br><br>
 
-            <h2>Find Above Average Industries Per Investor</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                Investor Name: <input type="text" name="investorAboveAverage" class="searchBox">
-                <input type="submit" value="Search" name="searchAboveAverage" class="button searchButton"></p>
-            </form>
+            <div class = "displayDiv">
+                <h2>Find Above Average Industries Per Investor</h2>
+                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Investor Name: <input type="text" name="investorAboveAverage" class="searchBox">
+                    <input type="submit" value="Search" name="searchAboveAverage" class="button searchButton"></p>
+                </form>
+            </div>
 
-            <hr />
+            <!-- <hr /> -->
+            <div class = "displayDiv">
+                <h2>Find Industrial Commitment Per Investor</h2>
+                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Investor Name: <input type="text" name="investorCommit" class="searchBox">
+                    <input type="submit" value="Search" name="searchIndustrialCommit" class="button searchButton"></p>
+                </form>
+            </div>
 
-            <h2>Find Industrial Commitment Per Investor</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                Investor Name: <input type="text" name="investorCommit" class="searchBox">
-                <input type="submit" value="Search" name="searchIndustrialCommit" class="button searchButton"></p>
-            </form>
+            <!-- <hr /> -->
+            <div class = "displayDiv">
+                <h2>View Total Amount Invested Per Industry</h2>
+                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Investor Name: <input type="text" name="investorNameTotal" class="searchBox">
+                    <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
+                </form>
+            </div>
 
             <hr />
 
             <h2>Search For The Youngest CEOs Per Degree</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
+            <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
                 Gender: <select name="ceoGender" id="genderSelect">
                             <option value=""></option>
                             <option value="MAN">Man</option>
@@ -170,13 +198,7 @@
 
             <hr />
 
-            <h2>View Total Amount Invested Per Industry</h2>
-            <form method="POST" action="oracle-test.php"> <!--refresh page when submitted-->
-                Investor Name: <input type="text" name="investorNameTotal" class="searchBox">
-                <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
-            </form>
-
-            <hr />
+            
 
         </div>
      
@@ -467,7 +489,7 @@
             echo "<table id=\"investmentsInfoTable\" class=\"infoTable\">";
                 echo "<tr>
                         <th>Investment</th>
-                        <th>Amont Invested</th>
+                        <th>Amount Invested</th>
                         <th>Industry</th>
                         <th>Country</th>
                     </tr>";
