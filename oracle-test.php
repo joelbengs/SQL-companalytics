@@ -467,7 +467,7 @@
             echo "<table id=\"investmentsInfoTable\" class=\"infoTable\">";
                 echo "<tr>
                         <th>Investment</th>
-                        <th>Amont Invested</th>
+                        <th>Amount Invested</th>
                         <th>Industry</th>
                         <th>Country</th>
                     </tr>";
