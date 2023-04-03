@@ -563,9 +563,27 @@
             $companyCEOStartDate = $_POST['updateCompanyDate'];
             $companyGrowthRate = $_POST['updateCompanyGrowth'];
 
-            $insertString = "UPDATE Company SET product = '$companyProduct', ticker = '$companyTicker', ceo = '$companyCEO', ceoDateStarted = '$companyCEOStartDate', growthRate = $companyGrowthRate WHERE LOWER(companyName) = '$company'";
+            $updateString = "UPDATE Company SET companyName = '" . ucwords($company) . "', ";
+            if ($companyProduct) {
+                $updateString .= "product = '$companyProduct', ";
+            }
+            if ($companyTicker) {
+                $updateString .= "ticker = '$companyTicker', ";
+            }
+            if ($companyCEO) {
+                $updateString .= "ceo = '$companyCEO', ";
+            }
+            if ($companyCEOStartDate) {
+                $updateString .= "ceoDateStarted = '$companyCEOStartDate', ";
+            }
+            if ($companyGrowthRate) {
+                $updateString .= "growthRate = '$companyGrowthRate', ";
+            }
+            $updateString = rtrim($updateString, ", ");
+            $updateString .= " WHERE LOWER(companyName) = '$company'";
+
             // TODO: need to check if company exists or not, and to make foreign keys in table
-            executePlainSQL($insertString);
+            executePlainSQL($updateString);
             echo "Updated Company";
             OCICommit($db_conn);
         }
