@@ -144,6 +144,10 @@
                                 <option value="Company">Company</option>
                                 <option value="Industry">Industry</option>
                                 <option value="Investor">Investor</option>
+                                <option value="CEO">CEO</option>
+                                <option value="ActiveIn">ActiveIn</option>
+                                <option value="InvestedIn">InvestedIn</option>
+                                <option value="ListedOn">ListedOn</option>
                         </select>
                 <input type="submit" value="Select" name="addDataToTables" class="button searchButton"></p>
             </form>
@@ -156,6 +160,10 @@
                                 <option value="Company">Company</option>
                                 <option value="Industry">Industry</option>
                                 <option value="Investor">Investor</option>
+                                <option value="CEO">CEO</option>
+                                <option value="ActiveIn">ActiveIn</option>
+                                <option value="InvestedIn">InvestedIn</option>
+                                <option value="ListedOn">ListedOn</option>
                         </select>
                 <input type="submit" value="Select" name="updateDataInTables" class="button searchButton"></p>
             </form>
@@ -168,6 +176,10 @@
                     <option value="Company">Company</option>
                     <option value="Industry">Industry</option>
                     <option value="Investor">Investor</option>
+                    <option value="CEO">CEO</option>
+                    <option value="ActiveIn">ActiveIn</option>
+                    <option value="InvestedIn">InvestedIn</option>
+                    <option value="ListedOn">ListedOn</option>
                 </select>
                 <input type="submit" value="Select" name="deleteDataInTables" class="button searchButton"></p>
             </form>
@@ -281,6 +293,25 @@
                     <option value="False">False</option>
                 </select>
                 <input type="submit" value="Add" name="addInvestorSubmit" class="button searchButton"></p>
+            </form>
+
+            <?php
+                }
+                if ($_POST['addTableData'] == 'CEO') {
+            ?>
+
+            <h2>Add CEO</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addCEO" name="addCEO">
+                Name: <input type="text" name="addCEOName" class="searchBox" required>
+                Age: <input type="text" name="addCEOAge" class="searchBox">
+                Gender: <select name="addCEOGender" id="addCEOGender">
+                    <option value=""></option>
+                    <option value="MAN">Man</option>
+                    <option value="WOMAN">Woman</option>
+                </select>
+                Education Level: <input type="text" name="addCEOEducation" class="searchBox">
+                <input type="submit" value="Add" name="addCEOSubmit" class="button searchButton"></p>
             </form>
 
             <?php 
@@ -569,6 +600,21 @@
             OCICommit($db_conn);
         }
 
+        function handleMakeCEO() {
+            global $db_conn;
+
+            $ceo = $_POST['addCEOName'];
+            $ceoAge = $_POST['addCEOAge'];
+            $ceoGender = $_POST['addCEOGender'];
+            $ceoEducation = $_POST['addCEOEducation'];
+
+
+            $insertString = "INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('$ceo', $ceoAge, '$ceoGender', '$ceoEducation')";
+            executePlainSQL($insertString);
+            echo "Inserted CEO";
+            OCICommit($db_conn);
+        }
+
         function handleUpdateIndustry() {
             global $db_conn;
 
@@ -719,6 +765,8 @@
                     handleDeleteIndustry();
                 } else if (array_key_exists('deleteInvestorSubmit', $_POST)) {
                     handleDeleteInvestor();
+                } else if (array_key_exists('addCEOSubmit', $_POST)) {
+                    handleMakeCEO();
                 }
 
                 disconnectFromDB();
@@ -734,7 +782,7 @@
             isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
             isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
             isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
-            isset($_POST['deleteInvestorSubmit'])) {
+            isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit'])) {
             handlePOSTRequest();
         }
 		?>
