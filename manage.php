@@ -161,6 +161,18 @@
             </form>
             <hr />
 
+            <h2>Delete Data</h2>
+            <form method="POST" action="manage.php">
+                Table: <select name="deleteTableData" id="deleteTableSelector">
+                    <option value=""></option>
+                    <option value="Company">Company</option>
+                    <option value="Industry">Industry</option>
+                    <option value="Investor">Investor</option>
+                </select>
+                <input type="submit" value="Select" name="deleteDataInTables" class="button searchButton"></p>
+            </form>
+            <hr />
+
             <h2>View Data</h2>
             <form method="POST" action="manage.php">
                 Table: <select name="viewTableData" id="viewTableSelector">
@@ -321,6 +333,16 @@
                 <input type="submit" value="Update" name="updateInvestorSubmit" class="button searchButton"></p>
             </form>
 
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'Company') {
+            ?>
+            <h2>Delete Company</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteCompany" name="deleteCompany">
+                Name: <input type="text" name="deleteCompanyName" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteCompanySubmit" class="button searchButton"></p>
+            </form>
             <?php
                 }
             ?>
@@ -581,10 +603,22 @@
                 $investorVC = 0;
             }
 
-            $insertString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE LOWER(investorName) = '$investor'";
+            $updateString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE LOWER(investorName) = '$investor'";
             // TODO: need to check if company exists or not, and to make foreign keys in table
-            executePlainSQL($insertString);
+            executePlainSQL($updateString);
             echo "Updated Investor";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteCompany() {
+            global $db_conn;
+
+            $company = strtolower($_POST['deleteCompanyName']);
+
+            $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            executePlainSQL($deleteString);
+            echo "Deleted Company";
             OCICommit($db_conn);
         }
 
@@ -644,6 +678,8 @@
                     handleUpdateCompany();
                 } else if (array_key_exists('selectedAttributesSubmit', $_POST)) {
                     handleViewSelectedData();
+                } else if (array_key_exists('deleteCompanySubmit', $_POST)) {
+                    handleDeleteCompany();
                 }
 
                 disconnectFromDB();
@@ -657,7 +693,8 @@
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) || isset($_POST['addInvestorSubmit']) || 
             isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
-            isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit'])) {
+            isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
+            isset($_POST['deleteCompanySubmit'])) {
             handlePOSTRequest();
         }
 		?>
