@@ -537,9 +537,18 @@
             $industryPERatio = $_POST['updateIndustryPE'];
             $industryRevenue = $_POST['updateIndustryRevenue'];
 
-            $insertString = "UPDATE Industry SET averagePERatio = $industryPERatio, averageRevenue = $industryRevenue WHERE LOWER(industryName) = '$industry'";
+            $updateSet = "UPDATE Industry SET industryName = '" . ucwords($industry) . "', ";
+            if ($industryPERatio) {
+                $updateSet .= "averagePERatio = $industryPERatio, ";
+            }
+            if ($industryRevenue) {
+                $updateSet .= "averageRevenue = $industryRevenue, ";
+            }
+            $updateSet = rtrim($updateSet, ", ");
+            $updateSet .= " WHERE LOWER(industryName) = '$industry'";
+
             // TODO: need to check if company exists or not, and to make foreign keys in table
-            executePlainSQL($insertString);
+            executePlainSQL($updateSet);
             echo "Updated Industry";
             OCICommit($db_conn);
         }
@@ -557,7 +566,7 @@
             $insertString = "UPDATE Company SET product = '$companyProduct', ticker = '$companyTicker', ceo = '$companyCEO', ceoDateStarted = '$companyCEOStartDate', growthRate = $companyGrowthRate WHERE LOWER(companyName) = '$company'";
             // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
-            echo "Updated Industry";
+            echo "Updated Company";
             OCICommit($db_conn);
         }
 
