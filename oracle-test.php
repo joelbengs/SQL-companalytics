@@ -291,8 +291,6 @@
                 }
             }
         }
-        // TODO: add option for user to specify a company is invested in by...
-        // TODO: add dynamic creation of tuples in ceo tables and other
 
         function connectToDB() {
             global $db_conn;

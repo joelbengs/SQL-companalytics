@@ -144,6 +144,10 @@
                                 <option value="Company">Company</option>
                                 <option value="Industry">Industry</option>
                                 <option value="Investor">Investor</option>
+                                <option value="CEO">CEO</option>
+                                <option value="ActiveIn">ActiveIn</option>
+                                <option value="InvestedIn">InvestedIn</option>
+                                <option value="ListedOn">ListedOn</option>
                         </select>
                 <input type="submit" value="Select" name="addDataToTables" class="button searchButton"></p>
             </form>
@@ -156,8 +160,28 @@
                                 <option value="Company">Company</option>
                                 <option value="Industry">Industry</option>
                                 <option value="Investor">Investor</option>
+                                <option value="CEO">CEO</option>
+                                <option value="ActiveIn">ActiveIn</option>
+                                <option value="InvestedIn">InvestedIn</option>
+                                <option value="ListedOn">ListedOn</option>
                         </select>
                 <input type="submit" value="Select" name="updateDataInTables" class="button searchButton"></p>
+            </form>
+            <hr />
+
+            <h2>Delete Data</h2>
+            <form method="POST" action="manage.php">
+                Table: <select name="deleteTableData" id="deleteTableSelector">
+                    <option value=""></option>
+                    <option value="Company">Company</option>
+                    <option value="Industry">Industry</option>
+                    <option value="Investor">Investor</option>
+                    <option value="CEO">CEO</option>
+                    <option value="ActiveIn">ActiveIn</option>
+                    <option value="InvestedIn">InvestedIn</option>
+                    <option value="ListedOn">ListedOn</option>
+                </select>
+                <input type="submit" value="Select" name="deleteDataInTables" class="button searchButton"></p>
             </form>
             <hr />
 
@@ -271,6 +295,25 @@
                 <input type="submit" value="Add" name="addInvestorSubmit" class="button searchButton"></p>
             </form>
 
+            <?php
+                }
+                if ($_POST['addTableData'] == 'CEO') {
+            ?>
+
+            <h2>Add CEO</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addCEO" name="addCEO">
+                Name: <input type="text" name="addCEOName" class="searchBox" required>
+                Age: <input type="text" name="addCEOAge" class="searchBox">
+                Gender: <select name="addCEOGender" id="addCEOGender">
+                    <option value=""></option>
+                    <option value="MAN">Man</option>
+                    <option value="WOMAN">Woman</option>
+                </select>
+                Education Level: <input type="text" name="addCEOEducation" class="searchBox">
+                <input type="submit" value="Add" name="addCEOSubmit" class="button searchButton"></p>
+            </form>
+
             <?php 
                 }
                 if ($_POST['updateTableData'] == 'Company') {
@@ -321,6 +364,36 @@
                 <input type="submit" value="Update" name="updateInvestorSubmit" class="button searchButton"></p>
             </form>
 
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'Company') {
+            ?>
+            <h2>Delete Company</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteCompany" name="deleteCompany">
+                Name: <input type="text" name="deleteCompanyName" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteCompanySubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'Industry') {
+            ?>
+            <h2>Delete Industry</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteIndustry" name="deleteIndustry">
+                Name: <input type="text" name="deleteIndustryName" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteIndustrySubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'Investor') {
+            ?>
+            <h2>Delete Investor</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteInvestor" name="deleteInvestor">
+                Name: <input type="text" name="deleteInvestorName" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteInvestorSubmit" class="button searchButton"></p>
+            </form>
             <?php
                 }
             ?>
@@ -475,7 +548,6 @@
             $sqlValues .= ")";
 
             $insertString = $sqlInsert . $sqlValues;
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Company";
             OCICommit($db_conn);
@@ -504,7 +576,6 @@
 
             $insertString = $sqlInsert . $sqlValues;
 
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Industry";
             OCICommit($db_conn);
@@ -524,9 +595,23 @@
 
             $insertString = "INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('$investor', $investorVC)";
 
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Investor";
+            OCICommit($db_conn);
+        }
+
+        function handleMakeCEO() {
+            global $db_conn;
+
+            $ceo = $_POST['addCEOName'];
+            $ceoAge = $_POST['addCEOAge'];
+            $ceoGender = $_POST['addCEOGender'];
+            $ceoEducation = $_POST['addCEOEducation'];
+
+
+            $insertString = "INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('$ceo', $ceoAge, '$ceoGender', '$ceoEducation')";
+            executePlainSQL($insertString);
+            echo "Inserted CEO";
             OCICommit($db_conn);
         }
 
@@ -547,7 +632,6 @@
             $updateSet = rtrim($updateSet, ", ");
             $updateSet .= " WHERE LOWER(industryName) = '$industry'";
 
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($updateSet);
             echo "Updated Industry";
             OCICommit($db_conn);
@@ -599,10 +683,42 @@
                 $investorVC = 0;
             }
 
-            $insertString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE LOWER(investorName) = '$investor'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
-            executePlainSQL($insertString);
+            $updateString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE LOWER(investorName) = '$investor'";
+            executePlainSQL($updateString);
             echo "Updated Investor";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteCompany() {
+            global $db_conn;
+
+            $company = strtolower($_POST['deleteCompanyName']);
+
+            $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
+            executePlainSQL($deleteString);
+            echo "Deleted Company";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteIndustry() {
+            global $db_conn;
+
+            $industry = strtolower($_POST['deleteIndustryName']);
+
+            $deleteString = "DELETE FROM Industry WHERE LOWER(industryName) = '$industry'";
+            executePlainSQL($deleteString);
+            echo "Deleted Industry";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteInvestor() {
+            global $db_conn;
+
+            $investor = strtolower($_POST['deleteInvestorName']);
+
+            $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
+            executePlainSQL($deleteString);
+            echo "Deleted Investor";
             OCICommit($db_conn);
         }
 
@@ -662,6 +778,14 @@
                     handleUpdateCompany();
                 } else if (array_key_exists('selectedAttributesSubmit', $_POST)) {
                     handleViewSelectedData();
+                } else if (array_key_exists('deleteCompanySubmit', $_POST)) {
+                    handleDeleteCompany();
+                } else if (array_key_exists('deleteIndustrySubmit', $_POST)) {
+                    handleDeleteIndustry();
+                } else if (array_key_exists('deleteInvestorSubmit', $_POST)) {
+                    handleDeleteInvestor();
+                } else if (array_key_exists('addCEOSubmit', $_POST)) {
+                    handleMakeCEO();
                 }
 
                 disconnectFromDB();
@@ -675,7 +799,9 @@
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) || isset($_POST['addInvestorSubmit']) || 
             isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
-            isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit'])) {
+            isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
+            isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
+            isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit'])) {
             handlePOSTRequest();
         }
 		?>
