@@ -456,8 +456,25 @@
             $companyCEOStartDate = $_POST['addCompanyDate'];
             $companyGrowthRate = $_POST['addCompanyGrowth'];
 
-            $insertString = "INSERT INTO Company(companyName, product, ticker, country, growthRate, ceo, ceoDateStarted) VALUES('$company', '$companyProduct', '$companyTicker', '$companyCountry', $companyGrowthRate, '$companyCEO', '$companyCEOStartDate')";
+            $sqlInsert = "INSERT INTO Company(companyName, ticker, country, ceo";
+            $sqlValues = " VALUES('$company', '$companyTicker', '$companyCountry', '$companyCEO'";
 
+            if ($companyProduct) {
+                $sqlInsert .= ", product";
+                $sqlValues .= ", '$companyProduct'";
+            }
+            if ($companyCEOStartDate) {
+                $sqlInsert .= ", ceoDateStarted";
+                $sqlValues .= ", '$companyCEOStartDate'";
+            }
+            if ($companyGrowthRate) {
+                $sqlInsert .= ", growthRate";
+                $sqlValues .= ", $companyGrowthRate";
+            }
+            $sqlInsert .= ") ";
+            $sqlValues .= ")";
+
+            $insertString = $sqlInsert . $sqlValues;
             // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Company";
@@ -471,7 +488,21 @@
             $industryPERatio = $_POST['addIndustryPE'];
             $industryRevenue = $_POST['addIndustryRevenue'];
 
-            $insertString = "INSERT INTO Industry(industryName, averagePERatio, averageRevenue) VALUES('$industry', $industryPERatio, $industryRevenue)";
+            $sqlInsert = "INSERT INTO Industry(industryName";
+            $sqlValues = " VALUES('$industry'";
+
+            if ($industryPERatio) {
+                $sqlInsert .= ", averagePERatio";
+                $sqlValues .= ", $industryPERatio";
+            }
+            if ($industryRevenue) {
+                $sqlInsert .= ", averageRevenue";
+                $sqlValues .= ", $industryRevenue";
+            }
+            $sqlInsert .= ") ";
+            $sqlValues .= ")";
+
+            $insertString = $sqlInsert . $sqlValues;
 
             // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
@@ -548,14 +579,6 @@
             OCICommit($db_conn);
         }
 
-        function handleViewData() {
-            global $db_conn;
-
-            $tableName = $_POST['viewTableData'];
-            $result = executePlainSQL("SELECT * FROM $tableName");
-            printAllData($result);
-        }
-
         function handleViewSelectedData() {
             global $db_conn;
             
@@ -604,8 +627,6 @@
                     handleMakeIndustry();
                 } else if (array_key_exists('addInvestorSubmit', $_POST)) {
                     handleMakeInvestor();
-                } else if (array_key_exists('viewDataInTables', $_POST)) {
-                    //handleViewData();
                 } else if (array_key_exists('updateIndustrySubmit', $_POST)) {
                     handleUpdateIndustry();
                 } else if (array_key_exists('updateInvestorSubmit', $_POST)) {
@@ -626,7 +647,7 @@
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
 		if (isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) || isset($_POST['addInvestorSubmit']) || 
-            isset($_POST['viewDataInTables']) || isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
+            isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
             isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit'])) {
             handlePOSTRequest();
         }
