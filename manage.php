@@ -778,7 +778,11 @@
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
                 $rows = "<tr>";
                 for ($i = 0; $i < $numAttributes; $i++) {
-                    $rows .= "<td>" . $row[$i] . "</td>";
+                    if ($row[$i] == 0 || $row[$i] == 1) {
+                        $rows .= "<td>" . ($row[$i] == 1 ? 'True' : 'False') . "</td>";
+                    } else {
+                        $rows .= "<td>" . $row[$i] . "</td>";
+                    }
                 }
                 $rows .= "</tr>";
                 echo $rows;
