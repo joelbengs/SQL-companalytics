@@ -355,6 +355,16 @@
             </form>
             <?php
                 }
+                if ($_POST['deleteTableData'] == 'Investor') {
+            ?>
+            <h2>Delete Investor</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteInvestor" name="deleteInvestor">
+                Name: <input type="text" name="deleteInvestorName" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteInvestorSubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
             ?>
 
         </div>
@@ -644,6 +654,18 @@
             OCICommit($db_conn);
         }
 
+        function handleDeleteInvestor() {
+            global $db_conn;
+
+            $investor = strtolower($_POST['deleteInvestorName']);
+
+            $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
+            // TODO: need to check if company exists or not, and to make foreign keys in table
+            executePlainSQL($deleteString);
+            echo "Deleted Investor";
+            OCICommit($db_conn);
+        }
+
         function handleViewSelectedData() {
             global $db_conn;
             
@@ -704,6 +726,8 @@
                     handleDeleteCompany();
                 } else if (array_key_exists('deleteIndustrySubmit', $_POST)) {
                     handleDeleteIndustry();
+                } else if (array_key_exists('deleteInvestorSubmit', $_POST)) {
+                    handleDeleteInvestor();
                 }
 
                 disconnectFromDB();
@@ -718,7 +742,8 @@
 		if (isset($_POST['addCompanySubmit']) || isset($_POST['addIndustrySubmit']) || isset($_POST['addInvestorSubmit']) || 
             isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
             isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
-            isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit'])) {
+            isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
+            isset($_POST['deleteInvestorSubmit'])) {
             handlePOSTRequest();
         }
 		?>
