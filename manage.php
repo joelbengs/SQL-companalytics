@@ -517,7 +517,6 @@
             $sqlValues .= ")";
 
             $insertString = $sqlInsert . $sqlValues;
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Company";
             OCICommit($db_conn);
@@ -546,7 +545,6 @@
 
             $insertString = $sqlInsert . $sqlValues;
 
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Industry";
             OCICommit($db_conn);
@@ -566,7 +564,6 @@
 
             $insertString = "INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('$investor', $investorVC)";
 
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Inserted Investor";
             OCICommit($db_conn);
@@ -589,7 +586,6 @@
             $updateSet = rtrim($updateSet, ", ");
             $updateSet .= " WHERE LOWER(industryName) = '$industry'";
 
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($updateSet);
             echo "Updated Industry";
             OCICommit($db_conn);
@@ -606,7 +602,6 @@
             $companyGrowthRate = $_POST['updateCompanyGrowth'];
 
             $insertString = "UPDATE Company SET product = '$companyProduct', ticker = '$companyTicker', ceo = '$companyCEO', ceoDateStarted = '$companyCEOStartDate', growthRate = $companyGrowthRate WHERE LOWER(companyName) = '$company'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($insertString);
             echo "Updated Company";
             OCICommit($db_conn);
@@ -624,7 +619,6 @@
             }
 
             $updateString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE LOWER(investorName) = '$investor'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($updateString);
             echo "Updated Investor";
             OCICommit($db_conn);
@@ -636,7 +630,6 @@
             $company = strtolower($_POST['deleteCompanyName']);
 
             $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($deleteString);
             echo "Deleted Company";
             OCICommit($db_conn);
@@ -648,7 +641,6 @@
             $industry = strtolower($_POST['deleteIndustryName']);
 
             $deleteString = "DELETE FROM Industry WHERE LOWER(industryName) = '$industry'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($deleteString);
             echo "Deleted Industry";
             OCICommit($db_conn);
@@ -660,7 +652,6 @@
             $investor = strtolower($_POST['deleteInvestorName']);
 
             $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
-            // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($deleteString);
             echo "Deleted Investor";
             OCICommit($db_conn);
