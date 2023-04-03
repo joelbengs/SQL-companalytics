@@ -314,6 +314,20 @@
                 <input type="submit" value="Add" name="addCEOSubmit" class="button searchButton"></p>
             </form>
 
+            <?php
+                }
+                if ($_POST['addTableData'] == 'ActiveIn') {
+            ?>
+
+            <h2>Set Company to be Active In an Industry</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addActiveIn" name="addActiveIn">
+                Company Name: <input type="text" name="addActiveInCompany" class="searchBox" required>
+                Industry Name: <input type="text" name="addActiveInIndustry" class="searchBox" required>
+                Active Since: <input type="text" name="addActiveInSince" class="searchBox">
+                <input type="submit" value="Add" name="addActiveInSubmit" class="button searchButton"></p>
+            </form>
+
             <?php 
                 }
                 if ($_POST['updateTableData'] == 'Company') {
@@ -615,6 +629,19 @@
             OCICommit($db_conn);
         }
 
+        function handleMakeActiveIn() {
+            global $db_conn;
+
+            $company = $_POST['addActiveInCompany'];
+            $industry = $_POST['addActiveInIndustry'];
+            $activeSince = $_POST['addActiveInSince'];
+
+            $insertString = "INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('$company', '$industry', '$activeSince')";
+            executePlainSQL($insertString);
+            echo "Linked Company to Industry";
+            OCICommit($db_conn);
+        }
+
         function handleUpdateIndustry() {
             global $db_conn;
 
@@ -767,6 +794,8 @@
                     handleDeleteInvestor();
                 } else if (array_key_exists('addCEOSubmit', $_POST)) {
                     handleMakeCEO();
+                } else if (array_key_exists('addActiveInSubmit', $_POST)) {
+                    handleMakeActiveIn();
                 }
 
                 disconnectFromDB();
@@ -782,7 +811,7 @@
             isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
             isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
             isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
-            isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit'])) {
+            isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit']) || isset($_POST['addActiveInSubmit'])) {
             handlePOSTRequest();
         }
 		?>
