@@ -328,6 +328,35 @@
                 <input type="submit" value="Add" name="addActiveInSubmit" class="button searchButton"></p>
             </form>
 
+            <?php
+                }
+                if ($_POST['addTableData'] == 'InvestedIn') {
+            ?>
+
+            <h2>Set Investor to be Invested In a Company</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="addInvests" name="addInvests">
+                Investor Name: <input type="text" name="addInvestsInvestor" class="searchBox" required>
+                Company Name: <input type="text" name="addInvestsCompany" class="searchBox" required>
+                Amount Invested: <input type="text" name="addInvestsAmount" class="searchBox">
+                <input type="submit" value="Add" name="addInvestsSubmit" class="button searchButton"></p>
+            </form>
+
+                    <?php
+                }
+            if ($_POST['addTableData'] == 'ListedOn') {
+                ?>
+
+                <h2>Set Company to be Listed On a StockExchange</h2>
+                <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                    <input type="hidden" id="addListedOn" name="addListedOn">
+                    Exchange Name: <input type="text" name="addListedOnExchange" class="searchBox" required>
+                    Company Name: <input type="text" name="addListedOnCompany" class="searchBox" required>
+                    Date Listed: <input type="text" name="addListedOnDate" class="searchBox">
+                    StockPrice: <input type="text" name="addListedOnPrice" class="searchBox">
+                    <input type="submit" value="Add" name="addListedOnSubmit" class="button searchButton"></p>
+                </form>
+
             <?php 
                 }
                 if ($_POST['updateTableData'] == 'Company') {
@@ -642,6 +671,33 @@
             OCICommit($db_conn);
         }
 
+        function handleMakeInvests() {
+            global $db_conn;
+
+            $investor = $_POST['addInvestsInvestor'];
+            $company = $_POST['addInvestsCompany'];
+            $amountInvested = $_POST['addInvestsAmount'];
+
+            $insertString = "INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('$investor', '$company', $amountInvested)";
+            executePlainSQL($insertString);
+            echo "Linked Investor to Company";
+            OCICommit($db_conn);
+        }
+
+        function handleMakeListedOn() {
+            global $db_conn;
+
+            $exchangeName = $_POST['addListedOnExchange'];
+            $company = $_POST['addListedOnCompany'];
+            $dateListed = $_POST['addListedOnDate'];
+            $stockPrice = $_POST['addListedOnPrice'];
+
+            $insertString = "INSERT INTO ListedOn(exchangeName, companyName, dateListed, stockPrice) VALUES('$exchangeName', '$company', '$dateListed', $stockPrice)";
+            executePlainSQL($insertString);
+            echo "Listed Company on Stock Exchange";
+            OCICommit($db_conn);
+        }
+
         function handleUpdateIndustry() {
             global $db_conn;
 
@@ -815,7 +871,12 @@
                     handleMakeCEO();
                 } else if (array_key_exists('addActiveInSubmit', $_POST)) {
                     handleMakeActiveIn();
+                } else if (array_key_exists('addInvestsSubmit', $_POST)) {
+                    handleMakeInvests();
+                } else if (array_key_exists('addListedOnSubmit', $_POST)) {
+                    handleMakeListedOn();
                 }
+
 
                 disconnectFromDB();
             } else {
@@ -830,7 +891,8 @@
             isset($_POST['updateIndustrySubmit']) || isset($_POST['updateInvestorSubmit']) || 
             isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
             isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
-            isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit']) || isset($_POST['addActiveInSubmit'])) {
+            isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit']) || isset($_POST['addActiveInSubmit']) ||
+            isset($_POST['addInvestsSubmit']) || isset($_POST['addListedOnSubmit'])) {
             handlePOSTRequest();
         }
 		?>
