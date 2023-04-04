@@ -258,7 +258,7 @@
                 Country: <input type="text" name="addCompanyCountry" class="searchBox" required>
                 CEO: <input type="text" name="addCompanyCEO" class="searchBox" required>
                 Start Date: <input type="text" name="addCompanyDate" class="searchBox">
-                Growth Rate: <input type="text" name="addCompanyGrowth" class="searchBox">
+                Growth Rate: <input type="number" step="any" min="0" name="addCompanyGrowth" class="searchBox">
                 <input type="submit" value="Add" name="addCompanySubmit" class="button searchButton"></p>
             </form>
 
@@ -272,8 +272,8 @@
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addIndustry" name="addIndustry">
                 Name: <input type="text" name="addIndustryName" class="searchBox" required>
-                Average PE Ratio: <input type="text" name="addIndustryPE" class="searchBox">
-                Average Revenue: <input type="text" name="addIndustryRevenue" class="searchBox">
+                Average PE Ratio: <input type="number" step="any" min="0" name="addIndustryPE" class="searchBox">
+                Average Revenue: <input type="number" step="any" min="0" name="addIndustryRevenue" class="searchBox">
                 <input type="submit" value="Add" name="addIndustrySubmit" class="button searchButton"></p>
             </form>
 
@@ -304,7 +304,7 @@
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="addCEO" name="addCEO">
                 Name: <input type="text" name="addCEOName" class="searchBox" required>
-                Age: <input type="text" name="addCEOAge" class="searchBox">
+                Age: <input type="number" step="any" min="0" name="addCEOAge" class="searchBox">
                 Gender: <select name="addCEOGender" id="addCEOGender">
                     <option value=""></option>
                     <option value="MAN">Man</option>
@@ -346,7 +346,7 @@
                 <input type="hidden" id="addInvests" name="addInvests">
                 Investor Name: <input type="text" name="addInvestsInvestor" class="searchBox" required>
                 Company Name: <input type="text" name="addInvestsCompany" class="searchBox" required>
-                Amount Invested: <input type="text" name="addInvestsAmount" class="searchBox">
+                Amount Invested: <input type="number" step="any" min="0" name="addInvestsAmount" class="searchBox">
                 <input type="submit" value="Add" name="addInvestsSubmit" class="button searchButton"></p>
             </form>
 
@@ -360,7 +360,7 @@
                     Exchange Name: <input type="text" name="addListedOnExchange" class="searchBox" required>
                     Company Name: <input type="text" name="addListedOnCompany" class="searchBox" required>
                     Date Listed: <input type="text" name="addListedOnDate" class="searchBox">
-                    StockPrice: <input type="text" name="addListedOnPrice" class="searchBox">
+                    StockPrice: <input type="number" step="any" min="0" name="addListedOnPrice" class="searchBox">
                     <input type="submit" value="Add" name="addListedOnSubmit" class="button searchButton"></p>
                 </form>
 
@@ -378,7 +378,7 @@
                 Country: <input type="text" name="addCompanyCountry" class="searchBox">
                 CEO: <input type="text" name="updateCompanyCEO" class="searchBox">
                 Start Date: <input type="text" name="updateCompanyDate" class="searchBox">
-                Growth Rate: <input type="text" name="updateCompanyGrowth" class="searchBox">
+                Growth Rate: <input type="number" step="any" min="0" name="updateCompanyGrowth" class="searchBox">
                 <input type="submit" value="Search" name="updateCompanySubmit" class="button searchButton"></p>
             </form>
 
@@ -393,8 +393,8 @@
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="updateIndustry" name="updateIndustry">
                 Name: <input type="text" name="updateIndustryName" class="searchBox" required>
-                Average PE Ratio: <input type="text" name="updateIndustryPE" class="searchBox">
-                Average Revenue: <input type="text" name="updateIndustryRevenue" class="searchBox">
+                Average PE Ratio: <input type="number" step="any" min="0" name="updateIndustryPE" class="searchBox">
+                Average Revenue: <input type="number" step="any" min="0" name="updateIndustryRevenue" class="searchBox">
                 <input type="submit" value="Update" name="updateIndustrySubmit" class="button searchButton"></p>
             </form>
             <hr />
@@ -423,7 +423,7 @@
             <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                 <input type="hidden" id="updateCEO" name="updateCEO">
                 Name: <input type="text" name="updateCEOName" class="searchBox" required>
-                Age: <input type="text" name="updateCEOAge" class="searchBox">
+                Age: <input type="number" step="any" min="0" name="updateCEOAge" class="searchBox">
                 Gender: <select name="updateCEOGender" id="updateCEOGender">
                     <option value=""></option>
                     <option value="MAN">Man</option>
@@ -463,7 +463,7 @@
                 <input type="hidden" id="updateInvests" name="updateInvests">
                 Investor Name: <input type="text" name="updateInvestsInvestor" class="searchBox" required>
                 Company Name: <input type="text" name="updateInvestsCompany" class="searchBox" required>
-                Amount Invested: <input type="text" name="updateInvestsAmount" class="searchBox">
+                Amount Invested: <input type="number" step="any" min="0" name="updateInvestsAmount" class="searchBox">
                 <input type="submit" value="Update" name="updateInvestsSubmit" class="button searchButton"></p>
             </form>
 
@@ -477,7 +477,7 @@
                 Exchange Name: <input type="text" name="updateListedOnExchange" class="searchBox" required>
                 Company Name: <input type="text" name="updateListedOnCompany" class="searchBox" required>
                 Date Listed: <input type="text" name="updateListedOnDate" class="searchBox">
-                Stock Price: <input type="text" name="updateListedOnPrice" class="searchBox">
+                Stock Price: <input type="number" step="any" min="0" name="updateListedOnPrice" class="searchBox">
                 <input type="submit" value="Update" name="updateListedOnSubmit" class="button searchButton"></p>
             </form>
 
@@ -592,9 +592,18 @@
 
             $r = OCIExecute($statement, OCI_DEFAULT);
             if (!$r) {
-                echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
+                //echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
                 $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-                echo htmlentities($e['message']);
+                $errorCode = strtok(htmlentities($e['message']), ':');
+                switch($errorCode) {
+                    case 'ORA-01722';
+                        echo "<script>
+                                alert(\"Ensure numbers are entered for numerical fields and text is entered for text fields.\");
+                            </script>";
+                        break;
+                    default:
+                        break;
+                }
                 $success = False;
             }
 
@@ -679,7 +688,7 @@
         }  */
 
         function handleMakeCompany() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = $_POST['addCompanyName'];
             $companyProduct = $_POST['addCompanyProduct'];
@@ -734,12 +743,14 @@
 
             $insertString = $sqlInsert . $sqlValues;
             executePlainSQL($insertString);
-            echo "Inserted Company";
+            if ($success) {
+                echo "Inserted Company";
+            }
             OCICommit($db_conn);
         }
 
         function handleMakeIndustry() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $industry = $_POST['addIndustryName'];
             $industryPERatio = $_POST['addIndustryPE'];
@@ -762,12 +773,14 @@
             $insertString = $sqlInsert . $sqlValues;
 
             executePlainSQL($insertString);
-            echo "Inserted Industry";
+            if ($success) {
+                echo "Inserted Industry";
+            }
             OCICommit($db_conn);
         }
 
         function handleMakeInvestor() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $investor = $_POST['addInvestorName'];
             $isVC = $_POST['addInvestorVC'];
@@ -780,12 +793,14 @@
             $insertString = "INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('$investor', $investorVC)";
 
             executePlainSQL($insertString);
-            echo "Inserted Investor";
+            if ($success) {
+                echo "Inserted Investor";
+            }
             OCICommit($db_conn);
         }
 
         function handleMakeCEO() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $ceo = $_POST['addCEOName'];
             $ceoAge = $_POST['addCEOAge'];
@@ -813,12 +828,14 @@
             $insertString = $sqlInsert . $sqlValues;
 
             executePlainSQL($insertString);
-            echo "Inserted CEO";
+            if ($success) {
+                echo "Inserted CEO";
+            }
             OCICommit($db_conn);
         }
 
         function handleMakeActiveIn() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = $_POST['addActiveInCompany'];
             $industry = $_POST['addActiveInIndustry'];
@@ -853,12 +870,14 @@
             $insertString = $sqlInsert . $sqlValues;
 
             executePlainSQL($insertString);
-            echo "Linked Company to Industry";
+            if ($success) {
+                echo "Linked Company to Industry";
+            }
             OCICommit($db_conn);
         }
 
         function handleMakeInvests() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $investor = $_POST['addInvestsInvestor'];
             $company = $_POST['addInvestsCompany'];
@@ -898,7 +917,7 @@
         }
 
         function handleMakeListedOn() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $exchangeName = $_POST['addListedOnExchange'];
             $company = $_POST['addListedOnCompany'];
@@ -947,12 +966,14 @@
             $insertString = $sqlInsert . $sqlValues;
 
             executePlainSQL($insertString);
-            echo "Listed Company on Stock Exchange";
+            if ($success) {
+                echo "Listed Company on Stock Exchange";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateIndustry() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $industry = strtolower($_POST['updateIndustryName']);
             $industryPERatio = $_POST['updateIndustryPE'];
@@ -969,12 +990,14 @@
             $updateSet .= " WHERE LOWER(industryName) = '$industry'";
 
             executePlainSQL($updateSet);
-            echo "Updated Industry";
+            if ($success) {
+                echo "Updated Industry";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateCompany() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = strtolower($_POST['updateCompanyName']);
             $companyProduct = $_POST['updateCompanyProduct'];
@@ -1032,19 +1055,21 @@
                 $updateString .= "ceoDateStarted = '$companyCEOStartDate', ";
             }
             if ($companyGrowthRate) {
-                $updateString .= "growthRate = '$companyGrowthRate', ";
+                $updateString .= "growthRate = $companyGrowthRate, ";
             }
             $updateString = rtrim($updateString, ", ");
             $updateString .= " WHERE LOWER(companyName) = '$company'";
 
             // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($updateString);
-            echo "Updated Company";
+            if ($success) {
+                echo "Updated Company";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateInvestor() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $investor = strtolower($_POST['updateInvestorName']);
             $isVC = $_POST['updateInvestorVC'];
@@ -1062,12 +1087,14 @@
             $updateString .= " WHERE LOWER(investorName) = '$investor'";
 
             executePlainSQL($updateString);
-            echo "Updated Investor";
+            if ($success) {
+                echo "Updated Investor";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateCEO() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $ceo = strtolower($_POST['updateCEOName']);
             $ceoAge = $_POST['updateCEOAge'];
@@ -1088,12 +1115,14 @@
             $updateString .= " WHERE LOWER(ceoName) = '$ceo'";
 
             executePlainSQL($updateString);
-            echo "Updated CEO";
+            if ($success) {
+                echo "Updated CEO";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateListedOn() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $exchange = strtolower($_POST['updateListedOnExchange']);
             $company = strtolower($_POST['updateListedOnCompany']);
@@ -1137,12 +1166,14 @@
             $updateString .= " WHERE LOWER(exchangeName) = '$exchange' AND LOWER(companyName) = '$company'";
 
             executePlainSQL($updateString);
-            echo "Updated Exchange Listing";
+            if ($success) {
+                echo "Updated Exchange Listing";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateInvests() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $investor = strtolower($_POST['updateInvestsInvestor']);
             $company = strtolower($_POST['updateInvestsCompany']);
@@ -1173,12 +1204,14 @@
             $updateString .= " WHERE LOWER(investorName) = '$investor' AND LOWER(companyName) = '$company'";
 
             executePlainSQL($updateString);
-            echo "Updated Investment";
+            if ($success) {
+                echo "Updated Investment";
+            }
             OCICommit($db_conn);
         }
 
         function handleUpdateActiveIn() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = strtolower($_POST['updateActiveInCompany']);
             $industry = strtolower($_POST['updateActiveInIndustry']);
@@ -1209,87 +1242,103 @@
             $updateString .= " WHERE LOWER(industryName) = '$industry' AND LOWER(companyName) = '$company'";
 
             executePlainSQL($updateString);
-            echo "Updated Industry";
+            if ($success) {
+                echo "Updated Industry";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteCompany() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = strtolower($_POST['deleteCompanyName']);
 
             $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
             executePlainSQL($deleteString);
-            echo "Deleted Company";
+            if ($success) {
+                echo "Deleted Company";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteIndustry() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $industry = strtolower($_POST['deleteIndustryName']);
 
             $deleteString = "DELETE FROM Industry WHERE LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
-            echo "Deleted Industry";
+            if ($success) {
+                echo "Deleted Industry";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteInvestor() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $investor = strtolower($_POST['deleteInvestorName']);
 
             $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
-            echo "Deleted Investor";
+            if ($success) {
+                echo "Deleted Investor";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteCEO() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $ceo = strtolower($_POST['deleteCEOName']);
 
             $deleteString = "DELETE FROM CEO WHERE LOWER(ceoName) = '$ceo'";
             executePlainSQL($deleteString);
-            echo "Deleted CEO";
+            if ($success) {
+                echo "Deleted CEO";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteActiveIn() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = strtolower($_POST['deleteActiveInCompany']);
             $industry = strtolower($_POST['deleteActiveInIndustry']);
 
             $deleteString = "DELETE FROM ActiveIn WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
-            echo "Deleted Industry Listing";
+            if ($success) {
+                echo "Deleted Industry Listing";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteListedOn() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = strtolower($_POST['deleteListedOnCompany']);
             $exchange = strtolower($_POST['deleteListedOnExchange']);
 
             $deleteString = "DELETE FROM ListedOn WHERE LOWER(companyName) = '$company' AND LOWER(exchangeName) = '$exchange'";
             executePlainSQL($deleteString);
-            echo "Deleted Stock Exchange Listing";
+            if ($success) {
+                echo "Deleted Stock Exchange Listing";
+            }
             OCICommit($db_conn);
         }
 
         function handleDeleteInvests() {
-            global $db_conn;
+            global $db_conn, $success;
 
             $company = strtolower($_POST['deleteInvestsCompany']);
             $investor = strtolower($_POST['deleteInvestsInvestor']);
 
             $deleteString = "DELETE FROM Invests WHERE LOWER(companyName) = '$company' AND LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
-            echo "Deleted Investment Listing";
+            if ($success) {
+                echo "Deleted Investment Listing";
+            }
             OCICommit($db_conn);
         }
 
