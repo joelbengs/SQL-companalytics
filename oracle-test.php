@@ -315,24 +315,7 @@
 
             debugAlertMessage("Disconnect from Database");
             OCILogoff($db_conn);
-        }
-
-        /* function handleInsertRequest() {
-            global $db_conn;
-
-            //Getting the values from user and insert data into the table
-            $tuple = array (
-                ":bind1" => $_POST['insNo'],
-                ":bind2" => $_POST['insName']
-            );
-
-            $alltuples = array (
-                $tuple
-            );
-
-            executeBoundSQL("insert into demoTable values (:bind1, :bind2)", $alltuples);
-            OCICommit($db_conn);
-        }  */
+        }      
 
         function handleCompaniesRequest() {
             global $db_conn;
@@ -348,7 +331,6 @@
             printAllData($result);
         }
 
-        // when the user clicks the industries button from the navigation bar (sets up the industries table if it does not already exist, displays industry names after)
         function handleIndustriesRequest() {
             global $db_conn;
 
@@ -360,9 +342,11 @@
         function handleSearchIndustries() {
             global $db_conn;
 
-            $industryName = $_POST['industryName'];
-            $peRatio = $_POST['peRatio'];
-            $revenue = $_POST['revenue'];
+            // sanitize the user input from $_POST so that it can be safely used in a query
+            
+            $industryName = sanitizeInput($_POST['industryName']);
+            $peRatio = sanitizeInput($_POST['peRatio']);
+            $revenue = sanitizeInput($_POST['revenue']);
             $sql = "SELECT * FROM Industry";
 
             if ($industryName != '') {
@@ -390,7 +374,7 @@
         // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchInvestors() {
             global $db_conn;
-            $investorName = $_POST['investorName'];
+            $investorName = sanitizeInput($_POST['investorName']);
             if ($investorName == '') {
                 $resultA = executePlainSQL("SELECT * FROM Investor");
                 printAllData($resultA);
@@ -406,7 +390,7 @@
         function handleSearchCompanies() {
             global $db_conn;
 
-            $companyName = $_POST['companyName'];
+            $companyName = sanitizeInput($_POST['companyName']);
 
             if ($companyName == '') {
                 $result = executePlainSQL("SELECT * FROM Company");
@@ -419,7 +403,7 @@
         function handleSearchAboveAverage() {
             global $db_conn;
 
-            $investorName = $_POST['investorAboveAverage'];
+            $investorName = sanitizeInput($_POST['investorAboveAverage']);
             $result = executePlainSQL("SELECT '". ucwords($investorName) . "' invName, Temp.industryName indName, ROUND(Temp.growthRate, 3) avgGR 
                                         FROM ( SELECT A.industryName, AVG(C.growthRate) as growthRate
                                             FROM Invests Inv, Company C, ActiveIn A
@@ -433,7 +417,7 @@
         function handleSearchCEOs() {
             global $db_conn;
 
-            $gender = $_POST['ceoGender'];
+            $gender = sanitizeInput($_POST['ceoGender']);
             $result = executePlainSQL("SELECT min(age) age, educationLevel
                                     FROM CEO
                                     WHERE gender = '" . $gender . "'
@@ -445,7 +429,7 @@
         function handleTotalInvest() {
             global $db_conn;
 
-            $investorName = $_POST['investorNameTotal'];
+            $investorName = sanitizeInput($_POST['investorNameTotal']);
             $result = executePlainSQL("SELECT sum(amountInvested) amount, industryName
                                        FROM Invests I, ActiveIn AI
                                        WHERE LOWER(investorName) = '" . strtolower($investorName) . "'
@@ -456,7 +440,7 @@
 
         function handleIndustrialCommit() {
             global $db_conn;
-            $investorName = $_POST['investorCommit'];
+            $investorName = sanitizeInput($_POST['investorCommit']);
             $result = executePlainSQL("SELECT I.industryName 
                                         FROM Industry I 
                                         WHERE NOT EXISTS (SELECT companyName 
@@ -527,6 +511,13 @@
             }
         }
 
+        function sanitizeInput($input){
+            $input = trim($input);
+            $input = stripslashes($input);
+            $input = htmlspecialchars($input);
+            return $input;
+        }
+
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
@@ -536,7 +527,7 @@
             isset($_POST['searchIndustrialCommit'])) {
             handlePOSTRequest();
 
-        } 
+        }
 		?>
 	</body>
 </html>
