@@ -375,6 +375,7 @@
                 Name: <input type="text" name="updateCompanyName" class="searchBox" required>
                 Product: <input type="text" name="updateCompanyProduct" class="searchBox">
                 Ticker: <input type="text" name="updateCompanyTicker" class="searchBox">
+                Country: <input type="text" name="addCompanyCountry" class="searchBox">
                 CEO: <input type="text" name="updateCompanyCEO" class="searchBox">
                 Start Date: <input type="text" name="updateCompanyDate" class="searchBox">
                 Growth Rate: <input type="text" name="updateCompanyGrowth" class="searchBox">
@@ -978,33 +979,40 @@
             $company = strtolower($_POST['updateCompanyName']);
             $companyProduct = $_POST['updateCompanyProduct'];
             $companyTicker = $_POST['updateCompanyTicker'];
+            $companyCountry = $_POST['addCompanyCountry'];
             $companyCEO = $_POST['updateCompanyCEO'];
             $companyCEOStartDate = $_POST['updateCompanyDate'];
             $companyGrowthRate = $_POST['updateCompanyGrowth'];
 
             // check for existing country
-            $checkCountry = executePlainSQL("SELECT countryName FROM Country WHERE LOWER(countryName) = '" . strtolower($companyCountry) . "'");
-            $row = OCI_Fetch_Array($checkCountry, OCI_BOTH);
-            if (!$row) {
-                executePlainSQL("INSERT INTO Country(countryName, primaryLanguage) VALUES ('$companyCountry', 'English')");
-                OCICommit($db_conn);
+            if ($companyCountry) {
+                $checkCountry = executePlainSQL("SELECT countryName FROM Country WHERE LOWER(countryName) = '" . strtolower($companyCountry) . "'");
+                $row = OCI_Fetch_Array($checkCountry, OCI_BOTH);
+                if (!$row) {
+                    executePlainSQL("INSERT INTO Country(countryName, primaryLanguage) VALUES ('$companyCountry', 'English')");
+                    OCICommit($db_conn);
+                }
             }
             // check for existing ceo
-            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(ceoName) = '" . strtolower($companyCEO) . "'");
-            $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
-            if (!$row) {
-                executePlainSQL("INSERT INTO CEO(ceoName) VALUES ('$companyCEO')");
-                OCICommit($db_conn);
+            if ($companyCEO) {
+                $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(ceoName) = '" . strtolower($companyCEO) . "'");
+                $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
+                if (!$row) {
+                    executePlainSQL("INSERT INTO CEO(ceoName) VALUES ('$companyCEO')");
+                    OCICommit($db_conn);
+                }
             }
 
-            // check for existing ticker
-            $checkUniqueTicker = executePlainSQL("SELECT * FROM Company WHERE LOWER(ticker) = '" . strtolower($companyTicker) . "'");
-            $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
-            if ($row) {
-                echo "<script>
-                        alert(\"Ticker symbol already exists. Please enter a unique ticker symbol.\");
-                      </script>";
-                return;
+            if ($companyTicker) {
+                // check for existing ticker
+                $checkUniqueTicker = executePlainSQL("SELECT * FROM Company WHERE LOWER(ticker) = '" . strtolower($companyTicker) . "'");
+                $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
+                if ($row) {
+                    echo "<script>
+                            alert(\"Ticker symbol already exists. Please enter a unique ticker symbol.\");
+                        </script>";
+                    return;
+                }
             }
 
             $updateString = "UPDATE Company SET companyName = '" . ucwords($company) . "', ";
@@ -1016,6 +1024,9 @@
             }
             if ($companyCEO) {
                 $updateString .= "ceo = '$companyCEO', ";
+            }
+            if ($companyCountry) {
+                $updateString .= "country = '$companyCountry', ";
             }
             if ($companyCEOStartDate) {
                 $updateString .= "ceoDateStarted = '$companyCEOStartDate', ";
