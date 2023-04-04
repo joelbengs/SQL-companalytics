@@ -310,7 +310,15 @@
                     <option value="MAN">Man</option>
                     <option value="WOMAN">Woman</option>
                 </select>
-                Education Level: <input type="text" name="addCEOEducation" class="searchBox">
+                Education Level:<select name="addCEOEducation" id="addCEOEducation">
+                    <option value=""></option>
+                    <option value="Highschool Diploma">Highschool Diploma</option>
+                    <option value="Bachelors Degree">Bachelor's Degree</option>
+                    <option value="Masters Degree">Master's Degree</option>
+                    <option value="PHD Degree">PHD</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="Apprenticeship Certificate">Apprenticeship</option>
+                </select>
                 <input type="submit" value="Add" name="addCEOSubmit" class="button searchButton"></p>
             </form>
 
@@ -420,7 +428,15 @@
                     <option value="MAN">Man</option>
                     <option value="WOMAN">Woman</option>
                 </select>
-                Education Level: <input type="text" name="updateCEOEducation" class="searchBox">
+                Education Level:<select name="updateCEOEducation" id="updateCEOEducation">
+                    <option value=""></option>
+                    <option value="Highschool Diploma">Highschool Diploma</option>
+                    <option value="Bachelors Degree">Bachelor's Degree</option>
+                    <option value="Masters Degree">Master's Degree</option>
+                    <option value="PHD Degree">PHD</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="Apprenticeship Certificate">Apprenticeship</option>
+                </select>
                 <input type="submit" value="Update" name="updateCEOSubmit" class="button searchButton"></p>
             </form>
 
@@ -624,7 +640,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_manny07", "a68393826", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -671,6 +687,21 @@
             $companyCEO = $_POST['addCompanyCEO'];
             $companyCEOStartDate = $_POST['addCompanyDate'];
             $companyGrowthRate = $_POST['addCompanyGrowth'];
+
+            // check for existing country
+            $checkCountry = executePlainSQL("SELECT countryName FROM Country WHERE LOWER(countryName) = '" . strtolower($companyCountry) . "'");
+            $row = OCI_Fetch_Array($checkCountry, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO Country(countryName, primaryLanguage) VALUES ('$companyCountry', 'English')");
+                OCICommit($db_conn);
+            }
+            // check for existing ceo
+            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(ceoName) = '" . strtolower($companyCEO) . "'");
+            $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO CEO(ceoName) VALUES ('$companyCEO')");
+                OCICommit($db_conn);
+            }
 
             $sqlInsert = "INSERT INTO Company(companyName, ticker, country, ceo";
             $sqlValues = " VALUES('$company', '$companyTicker', '$companyCountry', '$companyCEO'";
