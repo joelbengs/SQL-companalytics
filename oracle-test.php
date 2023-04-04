@@ -141,7 +141,7 @@
                 <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
                     Industry Name: <input type="text" name="industryName" class="searchBox">
                     PE Ratio: <input type="text" name="peRatio" class="searchBox">
-                    Revenue: <input type="text" name="revenue" class="searchBox">
+                    Minimum Revenue: <input type="text" name="revenue" class="searchBox">
                     <input type="submit" value="Search" name="searchIndustriesSubmit" class="button searchButton"></p>
                 </form>
             </div>
@@ -196,7 +196,7 @@
 
             <hr />
 
-            <h2>Search For The Youngest CEOs Per Degree</h2>
+            <h2>Search For The Youngest CEOs By Gender Per Degree</h2>
             <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
                 Gender: <select name="ceoGender" id="genderSelect">
                             <option value=""></option>
@@ -378,9 +378,9 @@
 
             if ($revenue != '') {
                 if (strpos($sql, 'WHERE') !== false) {
-                    $sql .= " AND AVERAGEREVENUE = " . $revenue . "";
+                    $sql .= " AND AVERAGEREVENUE >= " . $revenue . "";
                 } else {
-                    $sql .= " WHERE AVERAGEREVENUE = " . $revenue . "";
+                    $sql .= " WHERE AVERAGEREVENUE >= " . $revenue . "";
                 }
             }
             $result = executePlainSQL($sql);
