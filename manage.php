@@ -486,6 +486,49 @@
             </form>
             <?php
                 }
+                if ($_POST['deleteTableData'] == 'CEO') {
+            ?>
+            <h2>Delete CEO</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteCEO" name="deleteCEO">
+                Name: <input type="text" name="deleteCEOName" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteCEOSubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'ActiveIn') {
+            ?>
+            <h2>Delete Industry Listing</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteActiveIn" name="deleteActiveIn">
+                Company Name: <input type="text" name="deleteActiveInCompany" class="searchBox" required>
+                Industry Name: <input type="text" name="deleteActiveInIndustry" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteActiveInSubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'InvestedIn') {
+            ?>
+            <h2>Delete Investment Listing</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteInvests" name="deleteInvests">
+                Company Name: <input type="text" name="deleteInvestsCompany" class="searchBox" required>
+                Investor Name: <input type="text" name="deleteInvestsInvestor" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteInvestsSubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
+                if ($_POST['deleteTableData'] == 'ListedOn') {
+            ?>
+            <h2>Delete Stock Exchange Listing</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="deleteListedOn" name="deleteIndustry">
+                Company Name: <input type="text" name="deleteListedOnCompany" class="searchBox" required>
+                Stock Exchange: <input type="text" name="deleteListedOnExchange" class="searchBox" required>
+                <input type="submit" value="Delete" name="deleteListedOnSubmit" class="button searchButton"></p>
+            </form>
+            <?php
+                }
                 if ($_POST['deleteTableData'] == 'Investor') {
             ?>
             <h2>Delete Investor</h2>
@@ -1006,6 +1049,53 @@
             OCICommit($db_conn);
         }
 
+        function handleDeleteCEO() {
+            global $db_conn;
+
+            $ceo = strtolower($_POST['deleteCEOName']);
+
+            $deleteString = "DELETE FROM CEO WHERE LOWER(ceoName) = '$ceo'";
+            executePlainSQL($deleteString);
+            echo "Deleted CEO";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteActiveIn() {
+            global $db_conn;
+
+            $company = strtolower($_POST['deleteActiveInCompany']);
+            $industry = strtolower($_POST['deleteActiveInIndustry']);
+
+            $deleteString = "DELETE FROM ActiveIn WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
+            executePlainSQL($deleteString);
+            echo "Deleted Industry Listing";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteListedOn() {
+            global $db_conn;
+
+            $company = strtolower($_POST['deleteListedOnCompany']);
+            $exchange = strtolower($_POST['deleteListedOnExchange']);
+
+            $deleteString = "DELETE FROM ListedOn WHERE LOWER(companyName) = '$company' AND LOWER(exchangeName) = '$exchange'";
+            executePlainSQL($deleteString);
+            echo "Deleted Stock Exchange Listing";
+            OCICommit($db_conn);
+        }
+
+        function handleDeleteInvests() {
+            global $db_conn;
+
+            $company = strtolower($_POST['deleteInvestsCompany']);
+            $investor = strtolower($_POST['deleteInvestsInvestor']);
+
+            $deleteString = "DELETE FROM Invests WHERE LOWER(companyName) = '$company' AND LOWER(investorName) = '$investor'";
+            executePlainSQL($deleteString);
+            echo "Deleted Investment Listing";
+            OCICommit($db_conn);
+        }
+
         function handleViewSelectedData() {
             global $db_conn;
             
@@ -1088,6 +1178,14 @@
                     handleUpdateInvests();
                 } else if (array_key_exists('updateActiveInSubmit', $_POST)) {
                     handleUpdateActiveIn();
+                } else if (array_key_exists('deleteCEOSubmit', $_POST)) {
+                    handleDeleteCEO();
+                } else if (array_key_exists('deleteActiveInSubmit', $_POST)) {
+                    handleDeleteActiveIn();
+                } else if (array_key_exists('deleteInvestsSubmit', $_POST)) {
+                    handleDeleteInvests();
+                } else if (array_key_exists('deleteListedOnSubmit', $_POST)) {
+                    handleDeleteListedOn();
                 }
 
 
@@ -1106,7 +1204,9 @@
             isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
             isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit']) || isset($_POST['addActiveInSubmit']) ||
             isset($_POST['addInvestsSubmit']) || isset($_POST['addListedOnSubmit']) || isset($_POST['updateCEOSubmit']) ||
-            isset($_POST['updateListedOnSubmit']) || isset($_POST['updateInvestsSubmit']) || isset($_POST['updateActiveInSubmit'])) {
+            isset($_POST['updateListedOnSubmit']) || isset($_POST['updateInvestsSubmit']) ||
+            isset($_POST['updateActiveInSubmit']) || isset($_POST['deleteCEOSubmit']) || isset($_POST['deleteActiveInSubmit']) ||
+            isset($_POST['deleteInvestsSubmit']) || isset($_POST['deleteListedOnSubmit'])) {
             handlePOSTRequest();
         }
 		?>
