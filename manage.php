@@ -640,7 +640,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_manny07", "a68393826", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -708,7 +708,7 @@
             $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
             if ($row) {
                 echo "<script>
-                        alert(\"Please enter a unique ticker symbol.\");
+                        alert(\"Ticker symbol already exists. Please enter a unique ticker symbol.\");
                       </script>";
                 return;
             }
@@ -982,6 +982,31 @@
             $companyCEOStartDate = $_POST['updateCompanyDate'];
             $companyGrowthRate = $_POST['updateCompanyGrowth'];
 
+            // check for existing country
+            $checkCountry = executePlainSQL("SELECT countryName FROM Country WHERE LOWER(countryName) = '" . strtolower($companyCountry) . "'");
+            $row = OCI_Fetch_Array($checkCountry, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO Country(countryName, primaryLanguage) VALUES ('$companyCountry', 'English')");
+                OCICommit($db_conn);
+            }
+            // check for existing ceo
+            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(ceoName) = '" . strtolower($companyCEO) . "'");
+            $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO CEO(ceoName) VALUES ('$companyCEO')");
+                OCICommit($db_conn);
+            }
+
+            // check for existing ticker
+            $checkUniqueTicker = executePlainSQL("SELECT * FROM Company WHERE LOWER(ticker) = '" . strtolower($companyTicker) . "'");
+            $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
+            if ($row) {
+                echo "<script>
+                        alert(\"Ticker symbol already exists. Please enter a unique ticker symbol.\");
+                      </script>";
+                return;
+            }
+
             $updateString = "UPDATE Company SET companyName = '" . ucwords($company) . "', ";
             if ($companyProduct) {
                 $updateString .= "product = '$companyProduct', ";
@@ -1064,6 +1089,32 @@
             $listedOnDate = $_POST['updateListedOnDate'];
             $listedOnStockPrice = $_POST['updateListedOnPrice'];
 
+            // check for existing company
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<script>
+                        alert(\"Please create the company '$company' before assigning it to an exchange.\");
+                    </script>";
+                return;
+            }
+            // check for existing exchange
+            $checkExchange = executePlainSQL("SELECT exchangeName FROM StockExchange WHERE LOWER(exchangeName) = '" . strtolower($exchange) . "'");
+            $row = OCI_Fetch_Array($checkExchange, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO StockExchange(exchangeName) VALUES ('$exchange')");
+                OCICommit($db_conn);
+            }
+            // check for existing stockprice
+            if ($listedOnStockPrice) {
+                $checkStockPrice = executePlainSQL("SELECT stockPrice FROM StockInfo WHERE stockPrice = $listedOnStockPrice");
+                $row = OCI_Fetch_Array($checkStockPrice, OCI_BOTH);
+                if (!$row) {
+                    executePlainSQL("INSERT INTO StockInfo(stockPrice) VALUES ($listedOnStockPrice)");
+                    OCICommit($db_conn);
+                }
+            }
+
             $updateString = "UPDATE ListedOn SET companyName = '" . ucwords($company) . "', exchangeName = '" . ucwords($exchange) . "', ";
             if ($listedOnDate) {
                 $updateString .= "dateListed = '$listedOnDate', ";
@@ -1086,6 +1137,23 @@
             $company = strtolower($_POST['updateInvestsCompany']);
             $investsAmount = $_POST['updateInvestsAmount'];
 
+            // check for existing company
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<script>
+                        alert(\"Please create the company '$company' before assigning it to an investor.\");
+                    </script>";
+                return;
+            }
+            // check for existing investor
+            $checkInvestor = executePlainSQL("SELECT investorName FROM Investor WHERE LOWER(investorName) = '" . strtolower($investor) . "'");
+            $row = OCI_Fetch_Array($checkInvestor, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO Investor(investorName) VALUES ('$investor')");
+                OCICommit($db_conn);
+            }
+
             $updateString = "UPDATE Invests SET companyName = '" . ucwords($company) . "', investorName = '" . ucwords($investor) . "', ";
             if ($investsAmount) {
                 $updateString .= "amountInvested = $investsAmount, ";
@@ -1104,6 +1172,23 @@
             $company = strtolower($_POST['updateActiveInCompany']);
             $industry = strtolower($_POST['updateActiveInIndustry']);
             $activeInStartDate = $_POST['updateActiveInDate'];
+
+            // check for existing company
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<script>
+                        alert(\"Please create the company '$company' before assigning it to an industry.\");
+                      </script>";
+                return;
+            }
+            // check for existing industry
+            $checkIndustry = executePlainSQL("SELECT industryName FROM Industry WHERE LOWER(industryName) = '" . strtolower($industry) . "'");
+            $row = OCI_Fetch_Array($checkIndustry, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO Industry(industryName) VALUES ('$industry')");
+                OCICommit($db_conn);
+            }
 
             $updateString = "UPDATE ActiveIn SET companyName = '" . ucwords($company) . "', industryName = '" . ucwords($industry) . "', ";
             if ($activeInStartDate) {
