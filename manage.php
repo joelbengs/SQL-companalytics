@@ -843,6 +843,46 @@
             OCICommit($db_conn);
         }
 
+        function handleUpdateListedOn() {
+            global $db_conn;
+
+            $exchange = strtolower($_POST['updateListedOnExchange']);
+            $company = strtolower($_POST['updateListedOnCompany']);
+            $listedOnDate = $_POST['updateListedOnDate'];
+            $listedOnStockPrice = $_POST['updateListedOnPrice'];
+
+            $updateString = "UPDATE ListedOn SET dateListed = '$listedOnDate', stockPrice = $listedOnStockPrice WHERE LOWER(exchangeName) = '$exchange' AND LOWER(companyName) = '$company'";
+            executePlainSQL($updateString);
+            echo "Updated Exchange Listing";
+            OCICommit($db_conn);
+        }
+
+        function handleUpdateInvests() {
+            global $db_conn;
+
+            $investor = strtolower($_POST['updateInvestsInvestor']);
+            $company = strtolower($_POST['updateInvestsCompany']);
+            $investsAmount = $_POST['updateInvestsAmount'];
+
+            $updateString = "UPDATE Invests SET amountInvested = $investsAmount WHERE LOWER(investorName) = '$investor' AND LOWER(companyName) = '$company'";
+            executePlainSQL($updateString);
+            echo "Updated Investment";
+            OCICommit($db_conn);
+        }
+
+        function handleUpdateActiveIn() {
+            global $db_conn;
+
+            $company = strtolower($_POST['updateActiveInCompany']);
+            $industry = strtolower($_POST['updateActiveInIndustry']);
+            $activeInStartDate = $_POST['updateActiveInDate'];
+
+            $updateString = "UPDATE ActiveIn SET activeSince = '$activeInStartDate' WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
+            executePlainSQL($updateString);
+            echo "Updated Industry";
+            OCICommit($db_conn);
+        }
+
         function handleDeleteCompany() {
             global $db_conn;
 
@@ -952,6 +992,12 @@
                     handleMakeListedOn();
                 } else if (array_key_exists('updateCEOSubmit', $_POST)) {
                     handleUpdateCEO();
+                } else if (array_key_exists('updateListedOnSubmit', $_POST)) {
+                    handleUpdateListedOn();
+                } else if (array_key_exists('updateInvestsSubmit', $_POST)) {
+                    handleUpdateInvests();
+                } else if (array_key_exists('updateActiveInSubmit', $_POST)) {
+                    handleUpdateActiveIn();
                 }
 
 
