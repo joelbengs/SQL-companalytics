@@ -594,22 +594,26 @@
             if (!$r) {
                 //echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
                 $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-                echo htmlentities($e['message']);
+                echo htmlentities($e['message']); // comment this out after
                 $errorCode = strtok(htmlentities($e['message']), ':');
-                switch($errorCode) {
-                    case 'ORA-01722';
-                        echo "<script>
-                                alert(\"Ensure numbers are entered for numerical fields and text is entered for text fields.\");
-                            </script>";
-                        break;
-                    default:
-                        break;
-                }
+                handleError($errorCode);
                 $success = False;
             }
 
 			return $statement;
 		}
+
+        function handleError($errorCode) {
+            switch($errorCode) {
+                case 'ORA-01722';
+                    echo "<script>
+                            alert(\"Ensure numbers are entered for numerical fields and text is entered for text fields.\");
+                        </script>";
+                    break;
+                default:
+                    break;
+            }
+        }
 
         function executeBoundSQL($cmdstr, $list) {
             /* Sometimes the same statement will be executed several times with different values for the variables involved in the query.
