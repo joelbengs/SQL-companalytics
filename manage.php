@@ -594,6 +594,7 @@
             if (!$r) {
                 //echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
                 $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
+                echo htmlentities($e['message']);
                 $errorCode = strtok(htmlentities($e['message']), ':');
                 switch($errorCode) {
                     case 'ORA-01722';
