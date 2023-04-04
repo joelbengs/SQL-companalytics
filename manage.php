@@ -703,6 +703,16 @@
                 OCICommit($db_conn);
             }
 
+            // check for existing ticker
+            $checkUniqueTicker = executePlainSQL("SELECT * FROM Company WHERE LOWER(ticker) = '" . strtolower($companyTicker) . "'");
+            $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
+            if ($row) {
+                echo "<script>
+                        alert(\"Please enter a unique ticker symbol.\");
+                      </script>";
+                return;
+            }
+
             $sqlInsert = "INSERT INTO Company(companyName, ticker, country, ceo";
             $sqlValues = " VALUES('$company', '$companyTicker', '$companyCountry', '$companyCEO'";
 
@@ -813,6 +823,23 @@
             $industry = $_POST['addActiveInIndustry'];
             $activeSince = $_POST['addActiveInSince'];
 
+            // check for existing company
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<script>
+                        alert(\"Please create the company '$company' before assigning it to an industry.\");
+                      </script>";
+                return;
+            }
+            // check for existing industry
+            $checkIndustry = executePlainSQL("SELECT industryName FROM Industry WHERE LOWER(industryName) = '" . strtolower($industry) . "'");
+            $row = OCI_Fetch_Array($checkIndustry, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO Industry(industryName) VALUES ('$industry')");
+                OCICommit($db_conn);
+            }
+
             $sqlInsert = "INSERT INTO ActiveIn(companyName, industryName";
             $sqlValues = " VALUES('$company', '$industry'";
             if ($activeSince) {
@@ -835,6 +862,23 @@
             $investor = $_POST['addInvestsInvestor'];
             $company = $_POST['addInvestsCompany'];
             $amountInvested = $_POST['addInvestsAmount'];
+
+            // check for existing company
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<script>
+                        alert(\"Please create the company '$company' before assigning it to an investor.\");
+                    </script>";
+                return;
+            }
+            // check for existing investor
+            $checkInvestor = executePlainSQL("SELECT investorName FROM Investor WHERE LOWER(investorName) = '" . strtolower($investor) . "'");
+            $row = OCI_Fetch_Array($checkInvestor, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO Investor(investorName) VALUES ('$investor')");
+                OCICommit($db_conn);
+            }
 
             $sqlInsert = "INSERT INTO Invests(investorName, companyName";
             $sqlValues = " VALUES('$investor', '$company'";
@@ -859,6 +903,32 @@
             $company = $_POST['addListedOnCompany'];
             $dateListed = $_POST['addListedOnDate'];
             $stockPrice = $_POST['addListedOnPrice'];
+
+            // check for existing company
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<script>
+                        alert(\"Please create the company '$company' before assigning it to an exchange.\");
+                    </script>";
+                return;
+            }
+            // check for existing exchange
+            $checkExchange = executePlainSQL("SELECT exchangeName FROM StockExchange WHERE LOWER(exchangeName) = '" . strtolower($exchangeName) . "'");
+            $row = OCI_Fetch_Array($checkExchange, OCI_BOTH);
+            if (!$row) {
+                executePlainSQL("INSERT INTO StockExchange(exchangeName) VALUES ('$exchangeName')");
+                OCICommit($db_conn);
+            }
+            // check for existing stockprice
+            if ($stockPrice) {
+                $checkStockPrice = executePlainSQL("SELECT stockPrice FROM StockInfo WHERE stockPrice = $stockPrice");
+                $row = OCI_Fetch_Array($checkStockPrice, OCI_BOTH);
+                if (!$row) {
+                    executePlainSQL("INSERT INTO StockInfo(stockPrice) VALUES ($stockPrice)");
+                    OCICommit($db_conn);
+                }
+            }
 
             $sqlInsert = "INSERT INTO ListedOn(exchangeName, companyName";
             $sqlValues = " VALUES('$exchangeName', '$company'";
