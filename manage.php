@@ -581,7 +581,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_bengs", "a24158784", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_manny07", "a68393826", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -692,7 +692,6 @@
                 $investorVC = 0;
             }
 
-
             $insertString = "INSERT INTO Investor(investorName, isVentureCapitalist) VALUES('$investor', $investorVC)";
 
             executePlainSQL($insertString);
@@ -795,7 +794,7 @@
             }
             if ($stockPrice) {
                 $sqlInsert .= ", stockPrice";
-                $sqlValues .= ", '$stockPrice'";
+                $sqlValues .= ", $stockPrice";
             }
             $sqlInsert .= ") ";
             $sqlValues .= ")";
@@ -875,7 +874,13 @@
                 $investorVC = 0;
             }
 
-            $updateString = "UPDATE Investor SET isVentureCapitalist = $investorVC WHERE LOWER(investorName) = '$investor'";
+            $updateString = "UPDATE Investor SET investorName = '" . ucwords($investor) . "', ";
+            if (isset($_POST['updateInvestorVC'])) {
+                $updateString .= "isVentureCapitalist = $investorVC, ";
+            }
+            $updateString = rtrim($updateString, ", ");
+            $updateString .= " WHERE LOWER(investorName) = '$investor'";
+
             executePlainSQL($updateString);
             echo "Updated Investor";
             OCICommit($db_conn);
@@ -889,7 +894,19 @@
             $ceoGender = $_POST['updateCEOGender'];
             $ceoEducation = $_POST['updateCEOEducation'];
 
-            $updateString = "UPDATE CEO SET age = $ceoAge, gender = '$ceoGender', educationLevel = '$ceoEducation' WHERE LOWER(ceoName) = '$ceo'";
+            $updateString = "UPDATE CEO SET ceoName = '" . ucwords($ceo) . "', ";
+            if ($ceoAge) {
+                $updateString .= "age = $ceoAge, ";
+            }
+            if ($ceoGender) {
+                $updateString .= "gender = '$ceoGender', ";
+            }
+            if ($ceoEducation) {
+                $updateString .= "educationLevel = '$ceoEducation', ";
+            }
+            $updateString = rtrim($updateString, ", ");
+            $updateString .= " WHERE LOWER(ceoName) = '$ceo'";
+
             executePlainSQL($updateString);
             echo "Updated CEO";
             OCICommit($db_conn);
@@ -903,7 +920,16 @@
             $listedOnDate = $_POST['updateListedOnDate'];
             $listedOnStockPrice = $_POST['updateListedOnPrice'];
 
-            $updateString = "UPDATE ListedOn SET dateListed = '$listedOnDate', stockPrice = $listedOnStockPrice WHERE LOWER(exchangeName) = '$exchange' AND LOWER(companyName) = '$company'";
+            $updateString = "UPDATE ListedOn SET companyName = '" . ucwords($company) . "', exchangeName = '" . ucwords($exchange) . "', ";
+            if ($listedOnDate) {
+                $updateString .= "dateListed = '$listedOnDate', ";
+            }
+            if ($listedOnStockPrice) {
+                $updateString .= "stockPrice = $listedOnStockPrice, ";
+            }
+            $updateString = rtrim($updateString, ", ");
+            $updateString .= " WHERE LOWER(exchangeName) = '$exchange' AND LOWER(companyName) = '$company'";
+
             executePlainSQL($updateString);
             echo "Updated Exchange Listing";
             OCICommit($db_conn);
@@ -916,7 +942,13 @@
             $company = strtolower($_POST['updateInvestsCompany']);
             $investsAmount = $_POST['updateInvestsAmount'];
 
-            $updateString = "UPDATE Invests SET amountInvested = $investsAmount WHERE LOWER(investorName) = '$investor' AND LOWER(companyName) = '$company'";
+            $updateString = "UPDATE Invests SET companyName = '" . ucwords($company) . "', investorName = '" . ucwords($investor) . "', ";
+            if ($investsAmount) {
+                $updateString .= "amountInvested = $investsAmount, ";
+            }
+            $updateString = rtrim($updateString, ", ");
+            $updateString .= " WHERE LOWER(investorName) = '$investor' AND LOWER(companyName) = '$company'";
+
             executePlainSQL($updateString);
             echo "Updated Investment";
             OCICommit($db_conn);
@@ -929,7 +961,13 @@
             $industry = strtolower($_POST['updateActiveInIndustry']);
             $activeInStartDate = $_POST['updateActiveInDate'];
 
-            $updateString = "UPDATE ActiveIn SET activeSince = '$activeInStartDate' WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
+            $updateString = "UPDATE ActiveIn SET companyName = '" . ucwords($company) . "', industryName = '" . ucwords($industry) . "', ";
+            if ($activeInStartDate) {
+                $updateString .= "activeSince = '$activeInStartDate', ";
+            }
+            $updateString = rtrim($updateString, ", ");
+            $updateString .= " WHERE LOWER(industryName) = '$industry' AND LOWER(companyName) = '$company'";
+
             executePlainSQL($updateString);
             echo "Updated Industry";
             OCICommit($db_conn);
