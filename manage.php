@@ -342,11 +342,10 @@
                 <input type="submit" value="Add" name="addInvestsSubmit" class="button searchButton"></p>
             </form>
 
-                    <?php
+            <?php
                 }
-            if ($_POST['addTableData'] == 'ListedOn') {
-                ?>
-
+                if ($_POST['addTableData'] == 'ListedOn') {
+            ?>
                 <h2>Set Company to be Listed On a StockExchange</h2>
                 <form method="POST" action="manage.php"> <!--refresh page when submitted-->
                     <input type="hidden" id="addListedOn" name="addListedOn">
@@ -405,6 +404,64 @@
                     <option value="False">False</option>
                 </select>
                 <input type="submit" value="Update" name="updateInvestorSubmit" class="button searchButton"></p>
+            </form>
+
+            <?php
+                }
+                if ($_POST['updateTableData'] == 'CEO') {
+            ?>
+            <h2>Update CEO</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateCEO" name="updateCEO">
+                Name: <input type="text" name="updateCEOName" class="searchBox" required>
+                Age: <input type="text" name="updateCEOAge" class="searchBox">
+                Gender: <select name="updateCEOGender" id="updateCEOGender">
+                    <option value=""></option>
+                    <option value="MAN">Man</option>
+                    <option value="WOMAN">Woman</option>
+                </select>
+                Education Level: <input type="text" name="updateCEOEducation" class="searchBox">
+                <input type="submit" value="Update" name="updateCEOSubmit" class="button searchButton"></p>
+            </form>
+
+            <?php
+                }
+                if ($_POST['updateTableData'] == 'ActiveIn') {
+            ?>
+            <h2>Update Company's Industry</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateActiveIn" name="updateActiveIn">
+                Company Name: <input type="text" name="updateActiveInCompany" class="searchBox" required>
+                Industry Name: <input type="text" name="updateActiveInIndustry" class="searchBox" required>
+                Active Since: <input type="text" name="updateActiveInDate" class="searchBox">
+                <input type="submit" value="Update" name="updateActiveInSubmit" class="button searchButton"></p>
+            </form>
+
+            <?php
+                }
+                if ($_POST['updateTableData'] == 'InvestedIn') {
+            ?>
+            <h2>Update Investor's Investments</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateInvests" name="updateInvests">
+                Investor Name: <input type="text" name="updateInvestsInvestor" class="searchBox" required>
+                Company Name: <input type="text" name="updateInvestsCompany" class="searchBox" required>
+                Amount Invested: <input type="text" name="updateInvestsAmount" class="searchBox">
+                <input type="submit" value="Update" name="updateInvestsSubmit" class="button searchButton"></p>
+            </form>
+
+            <?php
+                }
+                if ($_POST['updateTableData'] == 'ListedOn') {
+            ?>
+            <h2>Update Stock Exchange Listing</h2>
+            <form method="POST" action="manage.php"> <!--refresh page when submitted-->
+                <input type="hidden" id="updateListedOn" name="updateCEO">
+                Exchange Name: <input type="text" name="updateListedOnExchange" class="searchBox" required>
+                Company Name: <input type="text" name="updateListedOnCompany" class="searchBox" required>
+                Date Listed: <input type="text" name="updateListedOnDate" class="searchBox">
+                Stock Price: <input type="text" name="updateListedOnPrice" class="searchBox">
+                <input type="submit" value="Update" name="updateListedOnSubmit" class="button searchButton"></p>
             </form>
 
             <?php
@@ -772,6 +829,20 @@
             OCICommit($db_conn);
         }
 
+        function handleUpdateCEO() {
+            global $db_conn;
+
+            $ceo = strtolower($_POST['updateCEOName']);
+            $ceoAge = $_POST['updateCEOAge'];
+            $ceoGender = $_POST['updateCEOGender'];
+            $ceoEducation = $_POST['updateCEOEducation'];
+
+            $updateString = "UPDATE CEO SET age = $ceoAge, gender = '$ceoGender', educationLevel = '$ceoEducation' WHERE LOWER(ceoName) = '$ceo'";
+            executePlainSQL($updateString);
+            echo "Updated CEO";
+            OCICommit($db_conn);
+        }
+
         function handleDeleteCompany() {
             global $db_conn;
 
@@ -879,6 +950,8 @@
                     handleMakeInvests();
                 } else if (array_key_exists('addListedOnSubmit', $_POST)) {
                     handleMakeListedOn();
+                } else if (array_key_exists('updateCEOSubmit', $_POST)) {
+                    handleUpdateCEO();
                 }
 
 
@@ -896,7 +969,8 @@
             isset($_POST['updateCompanySubmit']) || isset($_POST['selectedAttributesSubmit']) ||
             isset($_POST['deleteCompanySubmit']) || isset($_POST['deleteIndustrySubmit']) ||
             isset($_POST['deleteInvestorSubmit']) || isset($_POST['addCEOSubmit']) || isset($_POST['addActiveInSubmit']) ||
-            isset($_POST['addInvestsSubmit']) || isset($_POST['addListedOnSubmit'])) {
+            isset($_POST['addInvestsSubmit']) || isset($_POST['addListedOnSubmit']) || isset($_POST['updateCEOSubmit']) ||
+            isset($_POST['updateListedOnSubmit']) || isset($_POST['updateInvestsSubmit']) || isset($_POST['updateActiveInSubmit'])) {
             handlePOSTRequest();
         }
 		?>
