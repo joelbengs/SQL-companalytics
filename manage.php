@@ -708,8 +708,26 @@
             $ceoGender = $_POST['addCEOGender'];
             $ceoEducation = $_POST['addCEOEducation'];
 
+            $sqlInsert = "INSERT INTO CEO(ceoName";
+            $sqlValues = " VALUES('$ceo'";
 
-            $insertString = "INSERT INTO CEO(ceoName, age, gender, educationLevel) VALUES('$ceo', $ceoAge, '$ceoGender', '$ceoEducation')";
+            if ($ceoAge) {
+                $sqlInsert .= ", age";
+                $sqlValues .= ", $ceoAge";
+            }
+            if ($ceoGender) {
+                $sqlInsert .= ", gender";
+                $sqlValues .= ", '$ceoGender'";
+            }
+            if ($ceoEducation) {
+                $sqlInsert .= ", educationLevel";
+                $sqlValues .= ", '$ceoEducation'";
+            }
+            $sqlInsert .= ") ";
+            $sqlValues .= ")";
+
+            $insertString = $sqlInsert . $sqlValues;
+
             executePlainSQL($insertString);
             echo "Inserted CEO";
             OCICommit($db_conn);
@@ -722,7 +740,17 @@
             $industry = $_POST['addActiveInIndustry'];
             $activeSince = $_POST['addActiveInSince'];
 
-            $insertString = "INSERT INTO ActiveIn(companyName, industryName, activeSince) VALUES('$company', '$industry', '$activeSince')";
+            $sqlInsert = "INSERT INTO ActiveIn(companyName, industryName";
+            $sqlValues = " VALUES('$company', '$industry'";
+            if ($activeSince) {
+                $sqlInsert .= ", activeSince";
+                $sqlValues .= ", '$activeSince'";
+            }
+            $sqlInsert .= ") ";
+            $sqlValues .= ")";
+
+            $insertString = $sqlInsert . $sqlValues;
+
             executePlainSQL($insertString);
             echo "Linked Company to Industry";
             OCICommit($db_conn);
@@ -735,7 +763,17 @@
             $company = $_POST['addInvestsCompany'];
             $amountInvested = $_POST['addInvestsAmount'];
 
-            $insertString = "INSERT INTO Invests(investorName, companyName, amountInvested) VALUES('$investor', '$company', $amountInvested)";
+            $sqlInsert = "INSERT INTO Invests(investorName, companyName";
+            $sqlValues = " VALUES('$investor', '$company'";
+            if ($amountInvested) {
+                $sqlInsert .= ", amountInvested";
+                $sqlValues .= ", '$amountInvested'";
+            }
+            $sqlInsert .= ") ";
+            $sqlValues .= ")";
+
+            $insertString = $sqlInsert . $sqlValues;
+
             executePlainSQL($insertString);
             echo "Linked Investor to Company";
             OCICommit($db_conn);
@@ -749,7 +787,21 @@
             $dateListed = $_POST['addListedOnDate'];
             $stockPrice = $_POST['addListedOnPrice'];
 
-            $insertString = "INSERT INTO ListedOn(exchangeName, companyName, dateListed, stockPrice) VALUES('$exchangeName', '$company', '$dateListed', $stockPrice)";
+            $sqlInsert = "INSERT INTO ListedOn(exchangeName, companyName";
+            $sqlValues = " VALUES('$exchangeName', '$company'";
+            if ($dateListed) {
+                $sqlInsert .= ", dateListed";
+                $sqlValues .= ", '$dateListed'";
+            }
+            if ($stockPrice) {
+                $sqlInsert .= ", stockPrice";
+                $sqlValues .= ", '$stockPrice'";
+            }
+            $sqlInsert .= ") ";
+            $sqlValues .= ")";
+
+            $insertString = $sqlInsert . $sqlValues;
+
             executePlainSQL($insertString);
             echo "Listed Company on Stock Exchange";
             OCICommit($db_conn);
