@@ -695,13 +695,13 @@
         function handleMakeCompany() {
             global $db_conn, $success;
 
-            $company = $_POST['addCompanyName'];
-            $companyProduct = $_POST['addCompanyProduct'];
-            $companyTicker = $_POST['addCompanyTicker'];
-            $companyCountry = $_POST['addCompanyCountry'];
-            $companyCEO = $_POST['addCompanyCEO'];
-            $companyCEOStartDate = $_POST['addCompanyDate'];
-            $companyGrowthRate = $_POST['addCompanyGrowth'];
+            $company = sanitizeInput($_POST['addCompanyName']);
+            $companyProduct = sanitizeInput($_POST['addCompanyProduct']);
+            $companyTicker = sanitizeInput($_POST['addCompanyTicker']);
+            $companyCountry = sanitizeInput($_POST['addCompanyCountry']);
+            $companyCEO = sanitizeInput($_POST['addCompanyCEO']);
+            $companyCEOStartDate = sanitizeInput($_POST['addCompanyDate']);
+            $companyGrowthRate = sanitizeInput($_POST['addCompanyGrowth']);
 
             // check for existing country
             $checkCountry = executePlainSQL("SELECT countryName FROM Country WHERE LOWER(countryName) = '" . strtolower($companyCountry) . "'");
@@ -757,9 +757,9 @@
         function handleMakeIndustry() {
             global $db_conn, $success;
 
-            $industry = $_POST['addIndustryName'];
-            $industryPERatio = $_POST['addIndustryPE'];
-            $industryRevenue = $_POST['addIndustryRevenue'];
+            $industry = sanitizeInput($_POST['addIndustryName']);
+            $industryPERatio = sanitizeInput($_POST['addIndustryPE']);
+            $industryRevenue = sanitizeInput($_POST['addIndustryRevenue']);
 
             $sqlInsert = "INSERT INTO Industry(industryName";
             $sqlValues = " VALUES('$industry'";
@@ -787,8 +787,8 @@
         function handleMakeInvestor() {
             global $db_conn, $success;
 
-            $investor = $_POST['addInvestorName'];
-            $isVC = $_POST['addInvestorVC'];
+            $investor = sanitizeInput($_POST['addInvestorName']);
+            $isVC = sanitizeInput($_POST['addInvestorVC']);
             if ($isVC == "True") {
                 $investorVC = 1;
             } else {
@@ -807,10 +807,10 @@
         function handleMakeCEO() {
             global $db_conn, $success;
 
-            $ceo = $_POST['addCEOName'];
-            $ceoAge = $_POST['addCEOAge'];
-            $ceoGender = $_POST['addCEOGender'];
-            $ceoEducation = $_POST['addCEOEducation'];
+            $ceo = sanitizeInput($_POST['addCEOName']);
+            $ceoAge = sanitizeInput($_POST['addCEOAge']);
+            $ceoGender = sanitizeInput($_POST['addCEOGender']);
+            $ceoEducation = sanitizeInput($_POST['addCEOEducation']);
 
             $sqlInsert = "INSERT INTO CEO(ceoName";
             $sqlValues = " VALUES('$ceo'";
@@ -842,9 +842,9 @@
         function handleMakeActiveIn() {
             global $db_conn, $success;
 
-            $company = $_POST['addActiveInCompany'];
-            $industry = $_POST['addActiveInIndustry'];
-            $activeSince = $_POST['addActiveInSince'];
+            $company = sanitizeInput($_POST['addActiveInCompany']);
+            $industry = sanitizeInput($_POST['addActiveInIndustry']);
+            $activeSince = sanitizeInput($_POST['addActiveInSince']);
 
             // check for existing company
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
@@ -884,9 +884,9 @@
         function handleMakeInvests() {
             global $db_conn, $success;
 
-            $investor = $_POST['addInvestsInvestor'];
-            $company = $_POST['addInvestsCompany'];
-            $amountInvested = $_POST['addInvestsAmount'];
+            $investor = sanitizeInput($_POST['addInvestsInvestor']);
+            $company = sanitizeInput($_POST['addInvestsCompany']);
+            $amountInvested = sanitizeInput($_POST['addInvestsAmount']);
 
             // check for existing company
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
@@ -924,10 +924,10 @@
         function handleMakeListedOn() {
             global $db_conn, $success;
 
-            $exchangeName = $_POST['addListedOnExchange'];
-            $company = $_POST['addListedOnCompany'];
-            $dateListed = $_POST['addListedOnDate'];
-            $stockPrice = $_POST['addListedOnPrice'];
+            $exchangeName = sanitizeInput($_POST['addListedOnExchange']);
+            $company = sanitizeInput($_POST['addListedOnCompany']);
+            $dateListed = sanitizeInput($_POST['addListedOnDate']);
+            $stockPrice = sanitizeInput($_POST['addListedOnPrice']);
 
             // check for existing company
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
@@ -980,9 +980,9 @@
         function handleUpdateIndustry() {
             global $db_conn, $success;
 
-            $industry = strtolower($_POST['updateIndustryName']);
-            $industryPERatio = $_POST['updateIndustryPE'];
-            $industryRevenue = $_POST['updateIndustryRevenue'];
+            $industry = sanitizeInput(strtolower($_POST['updateIndustryName']));
+            $industryPERatio = sanitizeInput($_POST['updateIndustryPE']);
+            $industryRevenue = sanitizeInput($_POST['updateIndustryRevenue']);
 
             $updateSet = "UPDATE Industry SET industryName = '" . ucwords($industry) . "', ";
             if ($industryPERatio) {
@@ -1004,13 +1004,13 @@
         function handleUpdateCompany() {
             global $db_conn, $success;
 
-            $company = strtolower($_POST['updateCompanyName']);
-            $companyProduct = $_POST['updateCompanyProduct'];
-            $companyTicker = $_POST['updateCompanyTicker'];
-            $companyCountry = $_POST['addCompanyCountry'];
-            $companyCEO = $_POST['updateCompanyCEO'];
-            $companyCEOStartDate = $_POST['updateCompanyDate'];
-            $companyGrowthRate = $_POST['updateCompanyGrowth'];
+            $company = sanitizeInput(strtolower($_POST['updateCompanyName']));
+            $companyProduct = sanitizeInput($_POST['updateCompanyProduct']);
+            $companyTicker = sanitizeInput($_POST['updateCompanyTicker']);
+            $companyCountry = sanitizeInput($_POST['addCompanyCountry']);
+            $companyCEO = sanitizeInput($_POST['updateCompanyCEO']);
+            $companyCEOStartDate = sanitizeInput($_POST['updateCompanyDate']);
+            $companyGrowthRate = sanitizeInput($_POST['updateCompanyGrowth']);
 
             // check for existing country
             if ($companyCountry) {
@@ -1076,8 +1076,8 @@
         function handleUpdateInvestor() {
             global $db_conn, $success;
 
-            $investor = strtolower($_POST['updateInvestorName']);
-            $isVC = $_POST['updateInvestorVC'];
+            $investor = sanitizeInput(strtolower($_POST['updateInvestorName']));
+            $isVC = sanitizeInput($_POST['updateInvestorVC']);
             if ($isVC == "True") {
                 $investorVC = 1;
             } else {
@@ -1101,10 +1101,10 @@
         function handleUpdateCEO() {
             global $db_conn, $success;
 
-            $ceo = strtolower($_POST['updateCEOName']);
-            $ceoAge = $_POST['updateCEOAge'];
-            $ceoGender = $_POST['updateCEOGender'];
-            $ceoEducation = $_POST['updateCEOEducation'];
+            $ceo = sanitizeInput(strtolower($_POST['updateCEOName']));
+            $ceoAge = sanitizeInput($_POST['updateCEOAge']);
+            $ceoGender = sanitizeInput($_POST['updateCEOGender']);
+            $ceoEducation = sanitizeInput($_POST['updateCEOEducation']);
 
             $updateString = "UPDATE CEO SET ceoName = '" . ucwords($ceo) . "', ";
             if ($ceoAge) {
@@ -1129,10 +1129,10 @@
         function handleUpdateListedOn() {
             global $db_conn, $success;
 
-            $exchange = strtolower($_POST['updateListedOnExchange']);
-            $company = strtolower($_POST['updateListedOnCompany']);
-            $listedOnDate = $_POST['updateListedOnDate'];
-            $listedOnStockPrice = $_POST['updateListedOnPrice'];
+            $exchange = sanitizeInput(strtolower($_POST['updateListedOnExchange']));
+            $company = sanitizeInput(strtolower($_POST['updateListedOnCompany']));
+            $listedOnDate = sanitizeInput($_POST['updateListedOnDate']);
+            $listedOnStockPrice = sanitizeInput($_POST['updateListedOnPrice']);
 
             // check for existing company
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
@@ -1180,9 +1180,9 @@
         function handleUpdateInvests() {
             global $db_conn, $success;
 
-            $investor = strtolower($_POST['updateInvestsInvestor']);
-            $company = strtolower($_POST['updateInvestsCompany']);
-            $investsAmount = $_POST['updateInvestsAmount'];
+            $investor = sanitizeInput(strtolower($_POST['updateInvestsInvestor']));
+            $company = sanitizeInput(strtolower($_POST['updateInvestsCompany']));
+            $investsAmount = sanitizeInput($_POST['updateInvestsAmount']);
 
             // check for existing company
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
@@ -1218,9 +1218,9 @@
         function handleUpdateActiveIn() {
             global $db_conn, $success;
 
-            $company = strtolower($_POST['updateActiveInCompany']);
-            $industry = strtolower($_POST['updateActiveInIndustry']);
-            $activeInStartDate = $_POST['updateActiveInDate'];
+            $company = sanitizeInput(strtolower($_POST['updateActiveInCompany']));
+            $industry = sanitizeInput(strtolower($_POST['updateActiveInIndustry']));
+            $activeInStartDate = sanitizeInput($_POST['updateActiveInDate']);
 
             // check for existing company
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
@@ -1256,7 +1256,7 @@
         function handleDeleteCompany() {
             global $db_conn, $success;
 
-            $company = strtolower($_POST['deleteCompanyName']);
+            $company = sanitizeInput(strtolower($_POST['deleteCompanyName']));
 
             $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
             executePlainSQL($deleteString);
@@ -1269,7 +1269,7 @@
         function handleDeleteIndustry() {
             global $db_conn, $success;
 
-            $industry = strtolower($_POST['deleteIndustryName']);
+            $industry = sanitizeInput(strtolower($_POST['deleteIndustryName']));
 
             $deleteString = "DELETE FROM Industry WHERE LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
@@ -1282,7 +1282,7 @@
         function handleDeleteInvestor() {
             global $db_conn, $success;
 
-            $investor = strtolower($_POST['deleteInvestorName']);
+            $investor = sanitizeInput(strtolower($_POST['deleteInvestorName']));
 
             $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
@@ -1295,7 +1295,7 @@
         function handleDeleteCEO() {
             global $db_conn, $success;
 
-            $ceo = strtolower($_POST['deleteCEOName']);
+            $ceo = sanitizeInput(strtolower($_POST['deleteCEOName']));
 
             $deleteString = "DELETE FROM CEO WHERE LOWER(ceoName) = '$ceo'";
             executePlainSQL($deleteString);
@@ -1308,8 +1308,8 @@
         function handleDeleteActiveIn() {
             global $db_conn, $success;
 
-            $company = strtolower($_POST['deleteActiveInCompany']);
-            $industry = strtolower($_POST['deleteActiveInIndustry']);
+            $company = sanitizeInput(strtolower($_POST['deleteActiveInCompany']));
+            $industry = sanitizeInput(strtolower($_POST['deleteActiveInIndustry']));
 
             $deleteString = "DELETE FROM ActiveIn WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
@@ -1322,8 +1322,8 @@
         function handleDeleteListedOn() {
             global $db_conn, $success;
 
-            $company = strtolower($_POST['deleteListedOnCompany']);
-            $exchange = strtolower($_POST['deleteListedOnExchange']);
+            $company = sanitizeInput(strtolower($_POST['deleteListedOnCompany']));
+            $exchange = sanitizeInput(strtolower($_POST['deleteListedOnExchange']));
 
             $deleteString = "DELETE FROM ListedOn WHERE LOWER(companyName) = '$company' AND LOWER(exchangeName) = '$exchange'";
             executePlainSQL($deleteString);
@@ -1336,8 +1336,8 @@
         function handleDeleteInvests() {
             global $db_conn, $success;
 
-            $company = strtolower($_POST['deleteInvestsCompany']);
-            $investor = strtolower($_POST['deleteInvestsInvestor']);
+            $company = sanitizeInput(strtolower($_POST['deleteInvestsCompany']));
+            $investor = sanitizeInput(strtolower($_POST['deleteInvestsInvestor']));
 
             $deleteString = "DELETE FROM Invests WHERE LOWER(companyName) = '$company' AND LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
@@ -1446,6 +1446,13 @@
             }
         }
 
+        function sanitizeInput($input){
+            $input = trim($input);
+            $input = stripslashes($input);
+            $input = htmlspecialchars($input);
+            return $input;
+        }
+        
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
