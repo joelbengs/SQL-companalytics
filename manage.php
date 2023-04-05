@@ -517,7 +517,7 @@
             if (!$r) {
                 //echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
                 $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-                echo htmlentities($e['message']); // comment this out after
+                // echo htmlentities($e['message']); // comment this out after
                 $errorCode = strtok(htmlentities($e['message']), ':');
                 handleError($errorCode);
                 $success = False;

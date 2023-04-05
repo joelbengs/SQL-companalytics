@@ -163,9 +163,11 @@
             //There are a set of comments at the end of the file that describe some of the OCI specific functions and how they work
 
             if (!$statement) {
-                echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+                // echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
                 $e = OCI_Error($db_conn); // For OCIParse errors pass the connection handle
-                echo htmlentities($e['message']);
+                // echo htmlentities($e['message']);
+                $errorCode = strtok(htmlentities($e['message']), ':');
+                handleError($errorCode);
                 $success = False;
             }
 
@@ -179,6 +181,25 @@
 
 			return $statement;
 		}
+
+        function handleError($errorCode) {
+            switch($errorCode) {
+                case 'ORA-01722';
+                    echo "<div class=\"alertRed\">
+                            <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                            Ensure numbers are entered for numerical fields and text is entered for text fields.
+                        </div>";
+                    break;
+                case 'ORA-00911':
+                    echo "<div class=\"alertRed\">
+                            <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                            Enter the specified data.
+                        </div>";
+                    break;
+                default:
+                    break;
+            }
+        }
 
         function executeBoundSQL($cmdstr, $list) {
             /* Sometimes the same statement will be executed several times with different values for the variables involved in the query.
