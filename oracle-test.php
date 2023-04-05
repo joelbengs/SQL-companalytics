@@ -1,3 +1,9 @@
+
+<?php
+// NOTE:, the following code was inspired by and adapted from Tutorial 7 "PHP/ORACLE"
+// https://canvas.ubc.ca/courses/112179/assignments/1445437?module_item_id=5255267
+?>
+
 <html>
     <head>
         <link rel="stylesheet" href="styles.css"/>
