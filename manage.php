@@ -973,7 +973,7 @@
             if (!$row) {
                 echo "<div class=\"alertRed\">
                         <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
-                        '$company' does not exist.
+                        Company '$company' does not exist.
                     </div>";
                 return;
             }
@@ -1054,6 +1054,16 @@
                 $investorVC = 0;
             }
 
+            $checkInvestor = executePlainSQL("SELECT investorName FROM Investor WHERE LOWER(investorName) = '" . strtolower($investor) . "'");
+            $row = OCI_Fetch_Array($checkInvestor, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Investor '$investor' does not exist.
+                    </div>";
+                return;
+            }
+
             $updateString = "UPDATE Investor SET investorName = '" . ucwords($investor) . "', ";
             if (isset($_POST['updateInvestorVC'])) {
                 $updateString .= "isVentureCapitalist = $investorVC, ";
@@ -1078,6 +1088,16 @@
             $ceoAge = sanitizeInput($_POST['updateCEOAge']);
             $ceoGender = sanitizeInput($_POST['updateCEOGender']);
             $ceoEducation = sanitizeInput($_POST['updateCEOEducation']);
+            
+            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(investorName) = '" . strtolower($ceo) . "'");
+            $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        CEO '$ceo' does not exist.
+                    </div>";
+                return;
+            }
 
             $updateString = "UPDATE CEO SET ceoName = '" . ucwords($ceo) . "', ";
             if ($ceoAge) {
@@ -1246,6 +1266,16 @@
 
             $company = sanitizeInput(strtolower($_POST['deleteCompanyName']));
 
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Company '" . ucwords($company) . "' does not exist.
+                    </div>";
+                return;
+            }
+
             $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
             executePlainSQL($deleteString);
             if ($success) {
@@ -1261,6 +1291,16 @@
             global $db_conn, $success;
 
             $industry = sanitizeInput(strtolower($_POST['deleteIndustryName']));
+
+            $checkIndustry = executePlainSQL("SELECT industryName FROM Industry WHERE LOWER(industryName) = '" . strtolower($industry) . "'");
+            $row = OCI_Fetch_Array($checkIndustry, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Industry '" . ucwords($industry) . "' does not exist.
+                    </div>";
+                return;
+            }
 
             $deleteString = "DELETE FROM Industry WHERE LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
@@ -1278,6 +1318,16 @@
 
             $investor = sanitizeInput(strtolower($_POST['deleteInvestorName']));
 
+            $checkInvestor = executePlainSQL("SELECT investorName FROM Investor WHERE LOWER(investorName) = '" . strtolower($investor) . "'");
+            $row = OCI_Fetch_Array($checkInvestor, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Investor '" . ucwords($investor) . "' does not exist.
+                    </div>";
+                return;
+            }
+
             $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
             if ($success) {
@@ -1293,6 +1343,16 @@
             global $db_conn, $success;
 
             $ceo = sanitizeInput(strtolower($_POST['deleteCEOName']));
+
+            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(ceoName) = '" . strtolower($ceo) . "'");
+            $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        CEO '" . ucwords($ceo) . "' does not exist.
+                    </div>";
+                return;
+            }
 
             $deleteString = "DELETE FROM CEO WHERE LOWER(ceoName) = '$ceo'";
             executePlainSQL($deleteString);
@@ -1311,6 +1371,16 @@
             $company = sanitizeInput(strtolower($_POST['deleteActiveInCompany']));
             $industry = sanitizeInput(strtolower($_POST['deleteActiveInIndustry']));
 
+            $checkActiveIn = executePlainSQL("SELECT companyName, industryName FROM ActiveIn WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'");
+            $row = OCI_Fetch_Array($checkActiveIn, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Company '" . ucwords($company) . "' is not active in '" . ucwords($industry) . "'.
+                    </div>";
+                return;
+            }
+
             $deleteString = "DELETE FROM ActiveIn WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
             if ($success) {
@@ -1328,6 +1398,16 @@
             $company = sanitizeInput(strtolower($_POST['deleteListedOnCompany']));
             $exchange = sanitizeInput(strtolower($_POST['deleteListedOnExchange']));
 
+            $checkListedOn = executePlainSQL("SELECT companyName, exchangeName FROM ListedOn WHERE LOWER(companyName) = '$company' AND LOWER(exchangeName) = '$exchange'");
+            $row = OCI_Fetch_Array($checkListedOn, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Company '" . ucwords($company) . "' is not listed on '" . ucwords($exchange) . "'.
+                    </div>";
+                return;
+            }
+
             $deleteString = "DELETE FROM ListedOn WHERE LOWER(companyName) = '$company' AND LOWER(exchangeName) = '$exchange'";
             executePlainSQL($deleteString);
             if ($success) {
@@ -1344,6 +1424,16 @@
 
             $company = sanitizeInput(strtolower($_POST['deleteInvestsCompany']));
             $investor = sanitizeInput(strtolower($_POST['deleteInvestsInvestor']));
+
+            $checkInvests = executePlainSQL("SELECT companyName, investorName FROM Invests WHERE LOWER(companyName) = '$company' AND LOWER(investorName) = '$investor'");
+            $row = OCI_Fetch_Array($checkInvests, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Investor '" . ucwords($investor) . "' has not invested in '" . ucwords($company) . "'.
+                    </div>";
+                return;
+            }
 
             $deleteString = "DELETE FROM Invests WHERE LOWER(companyName) = '$company' AND LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
