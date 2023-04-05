@@ -90,8 +90,6 @@
                 INSERT INTO Language(langName, culture) VALUES('Portuguese', 'Roman Catholic');
                 INSERT INTO Language(langName, culture) VALUES('Spanish', 'Western European');
                 INSERT INTO Language(langName, culture) VALUES('Arabic', 'Islamic');
-                INSERT INTO Language(langName, culture) VALUES('Mandarin', 'Chinese');
-
 
  CREATE TABLE Education (educationLevel CHAR(80), netWorth INT, PRIMARY KEY (educationLevel));
                 INSERT INTO Education(educationLevel, netWorth) VALUES('Highschool Diploma', 3500000);
