@@ -139,12 +139,6 @@
         $success = True; //keep track of errors so it redirects the page only if there are no errors
         $db_conn = NULL; // edit the login credentials in connectToDB()
         $show_debug_alert_messages = False; // set to True if you want alerts to show you which methods are being triggered (see how it is used in debugAlertMessage())
-        $industriesExists = False;
-        $companiesExist = False;
-        $investsExists = False;
-        $activeInExists = False;
-        $ceoExists = False;
-        $investorExist = False;
 
         function debugAlertMessage($message) {
             //testing commit from cwl account 2
@@ -163,19 +157,19 @@
             //There are a set of comments at the end of the file that describe some of the OCI specific functions and how they work
 
             if (!$statement) {
-                // echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+                echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
                 $e = OCI_Error($db_conn); // For OCIParse errors pass the connection handle
-                // echo htmlentities($e['message']);
-                $errorCode = strtok(htmlentities($e['message']), ':');
-                handleError($errorCode);
+                echo htmlentities($e['message']);
                 $success = False;
             }
 
             $r = OCIExecute($statement, OCI_DEFAULT);
             if (!$r) {
-                echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
+                //echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
                 $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-                echo htmlentities($e['message']);
+                //echo htmlentities($e['message']);
+                $errorCode = strtok(htmlentities($e['message']), ':');
+                handleError($errorCode);
                 $success = False;
             }
 
