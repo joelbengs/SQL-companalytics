@@ -1,86 +1,9 @@
 <html>
     <head>
+        <link rel="stylesheet" href="styles.css"/>
         <title>Companalytics</title>
         <link rel="icon" type="image/x-icon" href="./104663.png">
     </head>
-    <style>
-        .displayForm {
-            display: inline-block;
-            margin: 0 10px 0px 10px;
-        }
-        .displayDiv {
-            display: inline-block;
-            margin-top: 5px;
-            padding: 5px;
-            border-style: solid;
-        }
-        .namesTable {
-            margin: 5px;
-            width: 15%;
-            border-collapse: collapse;
-            display: inline-table;
-        }
-        .infoTable {
-            margin: 5px;
-            width: 40%;
-            border-collapse: collapse;
-            display: inline-table;
-        }
-        .searchButton {
-            background-color: #1e1e1e; 
-            border: none;
-            border-radius: 11px;
-            color: white;
-            padding: 7px 25px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .searchBox {
-            border-radius: 12px;
-            border-width: thin;
-        }
-        th {
-            padding: 15px; 
-            text-align: center; 
-            background-color: #1e1e1e; 
-            color: white;
-            font-weight: normal;
-        }
-        td {
-            text-align: center; 
-            border-bottom: 1px solid #ddd; 
-            padding: 15px;
-        }
-        tr:hover {
-            background-color: #EC7300;
-        }
-        .topnav-centered {
-            float: none; 
-            position: absolute; 
-            top: 19px;
-            left: 50%; 
-            transform: translate(-50%, -50%);
-        }
-        .topnav {
-            background-color: #1e1e1e; 
-            overflow: hidden;
-        }
-        img {
-            position: absolute; top: 0px; left: 0; height:40px; transform: none;
-        }
-        a {
-            float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px;
-        }
-        .topnav-right {
-            float: right;
-        }
-        #all-content {
-            margin-left: 8px; 
-            margin-right: 8px;
-        }
-    </style>
 
     <body style = "margin: 0px;">
 
