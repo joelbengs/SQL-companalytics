@@ -8,7 +8,7 @@
     <head>
         <link rel="stylesheet" href="styles.css"/>
         <title>Companalytics</title>
-        <link rel="icon" type="image/x-icon" href="./104663.png">
+        <link rel="icon" type="image/x-icon" href="artifacts/104663.png">
     </head>
 
     <body style = "margin: 0px;">
@@ -17,7 +17,7 @@
 
             <!--Company logo. Currently, pressing it leads to illegal URL-->
             <div class="topnav-centered">
-                <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="companalytics.png" alt="Companalytics"></a>
+                <a href = "https://www.students.cs.ubc.ca/~CWL/oracle-test.php"><img src="artifacts/companalytics.png" alt="Companalytics"></a>
             </div>
 
             <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
