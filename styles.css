@@ -35,6 +35,35 @@
     border-radius: 12px;
     border-width: thin;
 }
+.alert {
+    padding: 20px;
+    background-color: #04AA6D;
+    color: white;
+    margin-bottom: 15px;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+.alertRed {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+    margin-bottom: 15px;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.closebtn:hover {
+    color: black;
+}
 th {
     padding: 15px; 
     text-align: center; 

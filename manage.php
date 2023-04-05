@@ -529,9 +529,16 @@
         function handleError($errorCode) {
             switch($errorCode) {
                 case 'ORA-01722';
-                    echo "<script>
-                            alert(\"Ensure numbers are entered for numerical fields and text is entered for text fields.\");
-                        </script>";
+                    echo "<div class=\"alertRed\">
+                            <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                            Ensure numbers are entered for numerical fields and text is entered for text fields.
+                        </div>";
+                    break;
+                case 'ORA-00911':
+                    echo "<div class=\"alertRed\">
+                            <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                            Enter the specified data.
+                        </div>";
                     break;
                 default:
                     break;
@@ -645,9 +652,10 @@
             $checkUniqueTicker = executePlainSQL("SELECT * FROM Company WHERE LOWER(ticker) = '" . strtolower($companyTicker) . "'");
             $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
             if ($row) {
-                echo "<script>
-                        alert(\"Ticker symbol already exists. Please enter a unique ticker symbol.\");
-                      </script>";
+                echo "<div class=\"alertRed\">
+                            <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                            Ticker symbol already exists. Please enter a unique ticker.
+                        </div>";
                 return;
             }
 
@@ -672,7 +680,10 @@
             $insertString = $sqlInsert . $sqlValues;
             executePlainSQL($insertString);
             if ($success) {
-                echo "Inserted Company";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Inserted Company.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -702,7 +713,10 @@
 
             executePlainSQL($insertString);
             if ($success) {
-                echo "Inserted Industry";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Inserted Industry.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -722,7 +736,10 @@
 
             executePlainSQL($insertString);
             if ($success) {
-                echo "Inserted Investor";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Inserted Investor.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -757,7 +774,10 @@
 
             executePlainSQL($insertString);
             if ($success) {
-                echo "Inserted CEO";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Inserted CEO.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -773,9 +793,10 @@
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
             $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
             if (!$row) {
-                echo "<script>
-                        alert(\"Please create the company '$company' before assigning it to an industry.\");
-                      </script>";
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Please create the company '$company' before assigning it to an investor.
+                    </div>";
                 return;
             }
             // check for existing industry
@@ -799,7 +820,10 @@
 
             executePlainSQL($insertString);
             if ($success) {
-                echo "Linked Company to Industry";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Linked Company to Industry.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -815,9 +839,10 @@
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
             $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
             if (!$row) {
-                echo "<script>
-                        alert(\"Please create the company '$company' before assigning it to an investor.\");
-                    </script>";
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Please create the company '$company' before assigning it to an investor.
+                    </div>";
                 return;
             }
             // check for existing investor
@@ -856,9 +881,10 @@
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
             $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
             if (!$row) {
-                echo "<script>
-                        alert(\"Please create the company '$company' before assigning it to an exchange.\");
-                    </script>";
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Please create the company '$company' before assigning it to an investor.
+                    </div>";
                 return;
             }
             // check for existing exchange
@@ -896,6 +922,10 @@
             executePlainSQL($insertString);
             if ($success) {
                 echo "Listed Company on Stock Exchange";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Listed Company on Stock Exchange.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -919,7 +949,10 @@
 
             executePlainSQL($updateSet);
             if ($success) {
-                echo "Updated Industry";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated Industry.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -934,6 +967,16 @@
             $companyCEO = sanitizeInput($_POST['updateCompanyCEO']);
             $companyCEOStartDate = sanitizeInput($_POST['updateCompanyDate']);
             $companyGrowthRate = sanitizeInput($_POST['updateCompanyGrowth']);
+
+            $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
+            $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
+            if (!$row) {
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        '$company' does not exist.
+                    </div>";
+                return;
+            }
 
             // check for existing country
             if ($companyCountry) {
@@ -959,9 +1002,10 @@
                 $checkUniqueTicker = executePlainSQL("SELECT * FROM Company WHERE LOWER(ticker) = '" . strtolower($companyTicker) . "'");
                 $row = OCI_Fetch_Array($checkUniqueTicker, OCI_BOTH);
                 if ($row) {
-                    echo "<script>
-                            alert(\"Ticker symbol already exists. Please enter a unique ticker symbol.\");
-                        </script>";
+                    echo "<div class=\"alertRed\">
+                            <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                            Ticker symbol already exists. Please enter a unique ticker.
+                        </div>";
                     return;
                 }
             }
@@ -991,7 +1035,10 @@
             // TODO: need to check if company exists or not, and to make foreign keys in table
             executePlainSQL($updateString);
             if ($success) {
-                echo "Updated Company";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated Company.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1016,7 +1063,10 @@
 
             executePlainSQL($updateString);
             if ($success) {
-                echo "Updated Investor";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated Investor.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1044,7 +1094,10 @@
 
             executePlainSQL($updateString);
             if ($success) {
-                echo "Updated CEO";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated CEO.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1061,9 +1114,10 @@
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
             $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
             if (!$row) {
-                echo "<script>
-                        alert(\"Please create the company '$company' before assigning it to an exchange.\");
-                    </script>";
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Please create the company '$company' before assigning it to an investor.
+                    </div>";
                 return;
             }
             // check for existing exchange
@@ -1095,7 +1149,10 @@
 
             executePlainSQL($updateString);
             if ($success) {
-                echo "Updated Exchange Listing";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated Exchange Listing.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1111,9 +1168,10 @@
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
             $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
             if (!$row) {
-                echo "<script>
-                        alert(\"Please create the company '$company' before assigning it to an investor.\");
-                    </script>";
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Please create the company '$company' before assigning it to an investor.
+                    </div>";
                 return;
             }
             // check for existing investor
@@ -1133,7 +1191,10 @@
 
             executePlainSQL($updateString);
             if ($success) {
-                echo "Updated Investment";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated Investment.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1149,9 +1210,10 @@
             $checkCompany = executePlainSQL("SELECT companyName FROM Company WHERE LOWER(companyName) = '" . strtolower($company) . "'");
             $row = OCI_Fetch_Array($checkCompany, OCI_BOTH);
             if (!$row) {
-                echo "<script>
-                        alert(\"Please create the company '$company' before assigning it to an industry.\");
-                      </script>";
+                echo "<div class=\"alertRed\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Please create the company '$company' before assigning it to an investor.
+                    </div>";
                 return;
             }
             // check for existing industry
@@ -1171,7 +1233,10 @@
 
             executePlainSQL($updateString);
             if ($success) {
-                echo "Updated Industry";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Updated Industry.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1184,7 +1249,10 @@
             $deleteString = "DELETE FROM Company WHERE LOWER(companyname) = '$company'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted Company";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted Company.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1197,7 +1265,10 @@
             $deleteString = "DELETE FROM Industry WHERE LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted Industry";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted Industry.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1210,7 +1281,10 @@
             $deleteString = "DELETE FROM Investor WHERE LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted Investor";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted Investor.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1223,7 +1297,10 @@
             $deleteString = "DELETE FROM CEO WHERE LOWER(ceoName) = '$ceo'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted CEO";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted CEO.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1237,7 +1314,10 @@
             $deleteString = "DELETE FROM ActiveIn WHERE LOWER(companyName) = '$company' AND LOWER(industryName) = '$industry'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted Industry Listing";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted Industry Listing.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1251,7 +1331,10 @@
             $deleteString = "DELETE FROM ListedOn WHERE LOWER(companyName) = '$company' AND LOWER(exchangeName) = '$exchange'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted Stock Exchange Listing";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted Stock Exchange Listing.
+                    </div>";
             }
             OCICommit($db_conn);
         }
@@ -1265,7 +1348,10 @@
             $deleteString = "DELETE FROM Invests WHERE LOWER(companyName) = '$company' AND LOWER(investorName) = '$investor'";
             executePlainSQL($deleteString);
             if ($success) {
-                echo "Deleted Investment Listing";
+                echo "<div class=\"alert\">
+                        <span class=\"closebtn\" onclick=\"this.parentElement.style.display='none';\">&times;</span>
+                        Deleted Investment Listing.
+                    </div>";
             }
             OCICommit($db_conn);
         }
