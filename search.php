@@ -278,7 +278,7 @@
             global $db_conn;
 
             $investorName = sanitizeInput($_POST['investorAboveAverage']);
-            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' invName, Temp.industryName indName, ROUND(Temp.growthRate, 3) avgGR 
+            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' investorName, Temp.industryName industryName, ROUND(Temp.growthRate, 3) averageGrowth 
                                         FROM ( SELECT A.industryName, AVG(C.growthRate) as growthRate
                                             FROM Invests Inv, Company C, ActiveIn A
                                             WHERE C.companyName = Inv.companyName AND A.companyName = C.companyName 
