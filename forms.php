@@ -2,7 +2,7 @@
 
     <!--Company logo-->
     <div class="topnav-centered">
-        <a href="https://www.students.cs.ubc.ca/~bengs/oracle-test.php"><img src="artifacts/companalytics.png" alt="Companalytics"></a>
+        <a href="https://www.students.cs.ubc.ca/~bengs/manage.php"><img src="artifacts/companalytics.png" alt="Companalytics"></a>
     </div>
 
     <!--This form is hidden from view, but submitted as HTTP POST when link below is pressed.-->
@@ -34,7 +34,7 @@
     <?= '<a href="#" onclick="document.getElementById(\'showCompanies\').submit(); ">Companies</a>'; ?>
 
     <!--SEARCH-->
-    <form action="oracle-test.php" method="POST" id="showSearch" style="display: none;">
+    <form action="search.php" method="POST" id="showSearch" style="display: none;">
         <input type="submit">Search</input>
     </form>
 
@@ -49,8 +49,8 @@
     <?= '<a href="#" onclick="document.getElementById(\'managePage\').submit(); ">Manage Database</a>'; ?>
 
     <div class="topnav-right">
-        <?= '<a>Contact Us</a>'; ?>
-        <?= '<a>About</a>'; ?>
+        <?= '<a href="https://www.reddit.com/r/wallstreetbets/">Connect with us</a>'; ?>
+        <?= '<a href="authors.php">About</a>'; ?>
     </div>
     
 </div>
