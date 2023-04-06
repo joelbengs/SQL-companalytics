@@ -20,7 +20,7 @@
 
             <div class = "displayDiv">
                 <h2>Search Industries</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Industry Name: <input type="text" name="industryName" class="searchBox">
                     PE Ratio: <input type="text" name="peRatio" class="searchBox">
                     Minimum Revenue: <input type="text" name="revenue" class="searchBox">
@@ -32,7 +32,7 @@
 
             <div class = "displayDiv">
                 <h2>Search Investors</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Investor Name: <input type="text" name="investorName" class="searchBox">
                     <input type="submit" value="Search" name="searchInvestorsSubmit" class="button searchButton"></p>
                 </form>
@@ -42,7 +42,7 @@
 
             <div class = "displayDiv">
                 <h2>Search Companies</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Company Name: <input type="text" name="companyName" class="searchBox">
                     <input type="submit" value="Search" name="searchCompaniesSubmit" class="button searchButton"></p>
                 </form>
@@ -52,7 +52,7 @@
 
             <div class = "displayDiv">
                 <h2>Find Above Average Industries Per Investor</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Investor Name: <input type="text" name="investorAboveAverage" class="searchBox">
                     <input type="submit" value="Search" name="searchAboveAverage" class="button searchButton"></p>
                 </form>
@@ -61,7 +61,7 @@
             <!-- <hr /> -->
             <div class = "displayDiv">
                 <h2>Find Industrial Commitment Per Investor</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Investor Name: <input type="text" name="investorCommit" class="searchBox">
                     <input type="submit" value="Search" name="searchIndustrialCommit" class="button searchButton"></p>
                 </form>
@@ -70,8 +70,8 @@
             <!-- <hr /> -->
             <div class = "displayDiv">
                 <h2>View Total Amount Invested Per Industry</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
-                    Investor Name: <input type="text" name="investorNameTotal" class="searchBox">
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Industry: <input type="text" name="investorNameTotal" class="searchBox">
                     <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
                 </form>
             </div>
@@ -79,7 +79,7 @@
             <hr />
 
             <h2>Search For The Youngest CEOs By Gender Per Degree</h2>
-            <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+            <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                 Gender: <select name="ceoGender" id="genderSelect">
                             <option value=""></option>
                             <option value="MAN">Man</option>

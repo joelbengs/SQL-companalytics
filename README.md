@@ -17,7 +17,7 @@ It might be necesarry to modify permission:
 
 Current permissions for a folder can be viewed fro the command line with _ls -la ~/public\_html_
 
-For this project implementation, the website can be viewed at https://www.students.cs.ubc.ca/~bengs/oracle-test.php
+For this project implementation, the website can be viewed at https://www.students.cs.ubc.ca/~bengs/manage.php
 
 ## Notice
 The code written for this assignment was inspired by and adapted from Tutorial 7 "PHP/ORACLE": 
