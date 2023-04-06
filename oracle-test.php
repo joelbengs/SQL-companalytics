@@ -214,27 +214,6 @@
             OCILogoff($db_conn);
         }      
 
-        function handleCompaniesRequest() {
-            global $db_conn;
-
-            $result = executePlainSQL("SELECT companyName FROM Company");
-            printAllData($result);
-        }
-
-        function handleInvestorsRequest() {
-            global $db_conn;
-
-            $result = executePlainSQL("SELECT investorName FROM Investor");
-            printAllData($result);
-        }
-
-        function handleIndustriesRequest() {
-            global $db_conn;
-
-            $result = executePlainSQL("SELECT industryName FROM Industry");
-            printAllData($result);
-        }
-
         // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchIndustries() {
             global $db_conn;
@@ -268,7 +247,6 @@
             printAllData($result);
         }
 
-        // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchInvestors() {
             global $db_conn;
             $investorName = sanitizeInput($_POST['investorName']);
@@ -283,7 +261,6 @@
             }
         }
 
-        // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchCompanies() {
             global $db_conn;
 
@@ -381,13 +358,7 @@
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
             if (connectToDB()) {
-                if (array_key_exists('showIndustriesTable', $_POST)) {
-                    handleIndustriesRequest();
-                } else if (array_key_exists('showInvestorsTable', $_POST)) {
-                    handleInvestorsRequest();
-                } else if (array_key_exists('showCompaniesTable', $_POST)) {
-                    handleCompaniesRequest();
-                } else if ($_POST['searchIndustriesSubmit'] == 'Search') {
+                if (array_key_exists('searchIndustriesSubmit', $_POST)) {                    handleCompaniesRequest();
                     handleSearchIndustries();
                 } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
                     handleSearchCompanies();
@@ -418,8 +389,7 @@
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
-		if (isset($_POST['showIndustriesTable']) || isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || 
-            isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || 
+		if (isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || 
             isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || isset($_POST['searchTotalInvest']) || 
             isset($_POST['searchIndustrialCommit'])) {
             handlePOSTRequest();
