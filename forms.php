@@ -49,7 +49,7 @@
     <?= '<a href="#" onclick="document.getElementById(\'managePage\').submit(); ">Manage Database</a>'; ?>
 
     <div class="topnav-right">
-        <?= '<a href="https://www.reddit.com/r/wallstreetbets/">Connect with us</a>'; ?>
+        <?= '<a href="https://www.reddit.com/r/wallstreetbets/" target="_blank">Connect with us</a>'; ?>
         <?= '<a href="authors.php">About</a>'; ?>
     </div>
     

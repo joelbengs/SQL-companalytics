@@ -72,9 +72,9 @@
 
             <!-- <hr /> -->
             <div class = "displayDiv">
-                <h2>View Total Amount Invested Per Industry</h2>
+                <h2>View Total Amount Invested In Each Industry Per Investor</h2>
                 <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
-                    Industry: <input type="text" name="investorNameTotal" class="searchBox">
+                    Investor: <input type="text" name="investorNameTotal" class="searchBox">
                     <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
                 </form>
             </div>
@@ -161,7 +161,7 @@
             global $db_conn;
 
             $investorName = sanitizeInput($_POST['investorAboveAverage']);
-            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' invName, Temp.industryName indName, ROUND(Temp.growthRate, 3) avgGR 
+            $result = executePlainSQL("SELECT '". ucwords($investorName) . "' investorName, Temp.industryName industryName, ROUND(Temp.growthRate, 3) averageGrowth 
                                         FROM ( SELECT A.industryName, AVG(C.growthRate) as growthRate
                                             FROM Invests Inv, Company C, ActiveIn A
                                             WHERE C.companyName = Inv.companyName AND A.companyName = C.companyName 
@@ -241,7 +241,7 @@
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
             if (connectToDB()) {
-                if (array_key_exists('searchIndustriesSubmit', $_POST)) {                    handleCompaniesRequest();
+                if (array_key_exists('searchIndustriesSubmit', $_POST)) {        
                     handleSearchIndustries();
                 } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
                     handleSearchCompanies();

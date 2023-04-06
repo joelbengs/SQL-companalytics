@@ -911,7 +911,7 @@
             $ceoGender = sanitizeInput($_POST['updateCEOGender']);
             $ceoEducation = sanitizeInput($_POST['updateCEOEducation']);
             
-            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(investorName) = '" . strtolower($ceo) . "'");
+            $checkCEO = executePlainSQL("SELECT ceoName FROM CEO WHERE LOWER(ceoName) = '" . strtolower($ceo) . "'");
             $row = OCI_Fetch_Array($checkCEO, OCI_BOTH);
             if (!$row) {
                 echo "<div class=\"alertRed\">
