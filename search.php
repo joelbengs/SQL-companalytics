@@ -69,9 +69,9 @@
 
             <!-- <hr /> -->
             <div class = "displayDiv">
-                <h2>View Total Amount Invested Per Industry</h2>
+                <h2>View Total Amount Invested In Each Industry Per Investor</h2>
                 <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
-                    Industry: <input type="text" name="investorNameTotal" class="searchBox">
+                    Investor: <input type="text" name="investorNameTotal" class="searchBox">
                     <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
                 </form>
             </div>
