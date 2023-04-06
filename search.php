@@ -20,7 +20,7 @@
 
             <div class = "displayDiv">
                 <h2>Search Industries</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Industry Name: <input type="text" name="industryName" class="searchBox">
                     PE Ratio: <input type="text" name="peRatio" class="searchBox">
                     Minimum Revenue: <input type="text" name="revenue" class="searchBox">
@@ -32,7 +32,7 @@
 
             <div class = "displayDiv">
                 <h2>Search Investors</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Investor Name: <input type="text" name="investorName" class="searchBox">
                     <input type="submit" value="Search" name="searchInvestorsSubmit" class="button searchButton"></p>
                 </form>
@@ -42,7 +42,7 @@
 
             <div class = "displayDiv">
                 <h2>Search Companies</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Company Name: <input type="text" name="companyName" class="searchBox">
                     <input type="submit" value="Search" name="searchCompaniesSubmit" class="button searchButton"></p>
                 </form>
@@ -52,7 +52,7 @@
 
             <div class = "displayDiv">
                 <h2>Find Above Average Industries Per Investor</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Investor Name: <input type="text" name="investorAboveAverage" class="searchBox">
                     <input type="submit" value="Search" name="searchAboveAverage" class="button searchButton"></p>
                 </form>
@@ -61,7 +61,7 @@
             <!-- <hr /> -->
             <div class = "displayDiv">
                 <h2>Find Industrial Commitment Per Investor</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                     Investor Name: <input type="text" name="investorCommit" class="searchBox">
                     <input type="submit" value="Search" name="searchIndustrialCommit" class="button searchButton"></p>
                 </form>
@@ -70,8 +70,8 @@
             <!-- <hr /> -->
             <div class = "displayDiv">
                 <h2>View Total Amount Invested Per Industry</h2>
-                <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
-                    Investor Name: <input type="text" name="investorNameTotal" class="searchBox">
+                <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
+                    Industry: <input type="text" name="investorNameTotal" class="searchBox">
                     <input type="submit" value="Search" name="searchTotalInvest" class="button searchButton"></p>
                 </form>
             </div>
@@ -79,7 +79,7 @@
             <hr />
 
             <h2>Search For The Youngest CEOs By Gender Per Degree</h2>
-            <form method="POST" action="oracle-test.php" class = "displayForm"> <!--refresh page when submitted-->
+            <form method="POST" action="search.php" class = "displayForm"> <!--refresh page when submitted-->
                 Gender: <select name="ceoGender" id="genderSelect">
                             <option value=""></option>
                             <option value="MAN">Man</option>
@@ -214,27 +214,6 @@
             OCILogoff($db_conn);
         }      
 
-        function handleCompaniesRequest() {
-            global $db_conn;
-
-            $result = executePlainSQL("SELECT companyName FROM Company");
-            printAllData($result);
-        }
-
-        function handleInvestorsRequest() {
-            global $db_conn;
-
-            $result = executePlainSQL("SELECT investorName FROM Investor");
-            printAllData($result);
-        }
-
-        function handleIndustriesRequest() {
-            global $db_conn;
-
-            $result = executePlainSQL("SELECT industryName FROM Industry");
-            printAllData($result);
-        }
-
         // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchIndustries() {
             global $db_conn;
@@ -268,7 +247,6 @@
             printAllData($result);
         }
 
-        // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchInvestors() {
             global $db_conn;
             $investorName = sanitizeInput($_POST['investorName']);
@@ -283,7 +261,6 @@
             }
         }
 
-        // when the user clicks search on industries, displays all info relevant to that industry
         function handleSearchCompanies() {
             global $db_conn;
 
@@ -381,13 +358,7 @@
 	    // A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
         function handlePOSTRequest() {
             if (connectToDB()) {
-                if (array_key_exists('showIndustriesTable', $_POST)) {
-                    handleIndustriesRequest();
-                } else if (array_key_exists('showInvestorsTable', $_POST)) {
-                    handleInvestorsRequest();
-                } else if (array_key_exists('showCompaniesTable', $_POST)) {
-                    handleCompaniesRequest();
-                } else if ($_POST['searchIndustriesSubmit'] == 'Search') {
+                if (array_key_exists('searchIndustriesSubmit', $_POST)) {                    handleCompaniesRequest();
                     handleSearchIndustries();
                 } else if ($_POST['searchCompaniesSubmit'] == 'Search') {
                     handleSearchCompanies();
@@ -418,8 +389,7 @@
         //Note that this code is not inside a function - when the page is loaded by a form this is run!
         // FILE STARTS HERE
         // use submit button names here for search forms, and hidden value names here for navbar links
-		if (isset($_POST['showIndustriesTable']) || isset($_POST['showInvestorsTable']) || isset($_POST['showCompaniesTable']) || 
-            isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || 
+		if (isset($_POST['searchIndustriesSubmit']) || isset($_POST['searchCompaniesSubmit']) || isset($_POST['searchInvestorsSubmit']) || 
             isset($_POST['searchAboveAverage']) || isset($_POST['searchCEOs']) || isset($_POST['searchTotalInvest']) || 
             isset($_POST['searchIndustrialCommit'])) {
             handlePOSTRequest();
